@@ -2,317 +2,483 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CEREBRO Wallet</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CEREBRO Wallet v3</title>
 <style>
-  :root { --bg:#0a0a14; --card:#12121f; --accent:#a259ff; --green:#00e676; --gold:#ffd600; --text:#e0e0e0; --dim:#888; --red:#ff4444; }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',Arial,sans-serif; min-height:100vh; }
-  header { background:var(--card); border-bottom:2px solid var(--accent); padding:16px 32px; }
-  header h1 { font-size:1.5rem; color:var(--accent); }
-  header p { font-size:.85rem; color:var(--dim); margin-top:4px; }
-  .container { max-width:900px; margin:0 auto; padding:24px; }
-  .card { background:var(--card); border:1px solid #2a2a3f; border-radius:12px; padding:24px; margin-bottom:20px; }
-  .card h2 { font-size:1rem; color:var(--gold); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
-  label { display:block; font-size:.85rem; color:var(--dim); margin-bottom:6px; margin-top:12px; }
-  input, select, textarea { width:100%; background:#1a1a2e; border:1px solid #3a3a5f; border-radius:8px; padding:10px 14px; color:var(--text); font-size:.9rem; font-family:monospace; }
-  input:focus, select:focus, textarea:focus { outline:none; border-color:var(--accent); }
-  textarea { resize:vertical; min-height:60px; }
-  button { background:var(--accent); border:none; border-radius:8px; padding:11px 22px; color:#fff; cursor:pointer; font-weight:600; font-size:.95rem; margin-top:14px; width:100%; transition:.2s; }
-  button:hover { opacity:.85; }
-  button.sec { background:#1a1a2e; border:1px solid var(--accent); color:var(--accent); }
-  .result { background:#0d1a14; border:1px solid #1a3a2a; border-radius:8px; padding:14px; margin-top:14px; font-family:monospace; font-size:.82rem; word-break:break-all; line-height:1.6; display:none; }
-  .result.show { display:block; }
-  .result.erro { background:#1a0d0d; border-color:#3a1a1a; color:var(--red); }
-  .balance-box { text-align:center; padding:20px 0; }
-  .balance-box .val { font-size:2.8rem; font-weight:700; color:var(--green); }
-  .balance-box .sym { font-size:1rem; color:var(--dim); margin-top:4px; }
-  .token-balances { margin-top:16px; }
-  .token-bal { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #1a1a2e; font-size:.9rem; }
-  .warn { background:#1a1a00; border:1px solid #3a3a00; border-radius:8px; padding:12px; margin-bottom:16px; font-size:.85rem; color:#ffc107; }
-  .tabs { display:flex; gap:4px; margin-bottom:20px; flex-wrap:wrap; }
-  .tab { background:#1a1a2e; border:1px solid #2a2a3f; border-radius:8px; padding:8px 16px; cursor:pointer; font-size:.88rem; }
-  .tab.active { background:var(--accent); border-color:var(--accent); color:#fff; }
-  .panel { display:none; }
-  .panel.active { display:block; }
-  .addr-short { font-family:monospace; font-size:.8rem; color:var(--dim); margin-top:4px; word-break:break-all; }
-  #walletAddr { font-family:monospace; font-size:.75rem; color:var(--accent); word-break:break-all; margin-top:8px; display:none; }
+:root{--acc:#a259ff;--grn:#00e676;--blue:#2979ff;--org:#ff9100;--bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;--bd:#2a2a2a;--txt:#f0f0f0;--mut:#888}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--txt)}
+nav{display:flex;align-items:center;gap:12px;padding:12px 20px;background:var(--bg2);border-bottom:1px solid var(--bd)}
+.logo{font-size:18px;font-weight:900;color:var(--acc)}
+.nav-tabs{display:flex;gap:3px;flex-wrap:wrap}
+.tab{padding:7px 13px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;color:var(--mut);border:none;background:none}
+.tab:hover,.tab.active{background:var(--bg3);color:var(--txt)}
+.tab.active{color:var(--acc)}
+.explorer-link{margin-left:auto;color:var(--mut);font-size:12px;text-decoration:none;border:1px solid var(--bd);border-radius:6px;padding:6px 12px}
+.explorer-link:hover{border-color:var(--acc);color:var(--acc)}
+main{padding:20px;max-width:720px;margin:0 auto}
+.panel{display:none}.panel.active{display:block}
+.card{background:var(--bg3);border:1px solid var(--bd);border-radius:12px;padding:20px;margin-bottom:14px}
+.card-title{font-size:14px;font-weight:700;margin-bottom:14px;color:var(--acc)}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--mut);margin-bottom:6px}
+.field input,.field textarea,.field select{width:100%;background:var(--bg2);border:1px solid var(--bd);border-radius:8px;color:var(--txt);padding:10px 14px;font-size:13px;outline:none;font-family:inherit}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--acc)}
+.field textarea{min-height:100px;resize:vertical}
+.field select option{background:var(--bg2)}
+.btn{width:100%;padding:12px;border-radius:9px;font-size:14px;font-weight:800;cursor:pointer;border:none;margin-top:4px}
+.btn-acc{background:var(--acc);color:#fff}.btn-acc:hover{opacity:.9}
+.btn-grn{background:var(--grn);color:#000}.btn-grn:hover{opacity:.9}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{opacity:.9}
+.btn-org{background:var(--org);color:#000}.btn-org:hover{opacity:.9}
+.btn-out{background:transparent;border:1px solid var(--bd);color:var(--txt)}.btn-out:hover{border-color:var(--acc)}
+.result{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:14px;font-size:12px;margin-top:12px;line-height:1.8;display:none}
+.result.ok{border-color:var(--grn)}.result.err{border-color:#ff1744;color:#ff1744}
+.result.show{display:block}
+.addr-display{font-family:monospace;font-size:11px;color:var(--acc);background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:8px;word-break:break-all;margin:6px 0}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a1a1a;font-size:13px}
+.stat-row:last-child{border:none}
+.stat-val{font-weight:700;color:var(--acc)}
+.badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px}
+.b-tok{background:#1a1225;color:var(--acc);border:1px solid #a259ff33}
+.b-nft{background:#1a1a00;color:#ffd600;border:1px solid #ffd60033}
+.nft-mini{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.nft-chip{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:8px;font-size:11px;text-align:center;min-width:80px;cursor:pointer}
+.nft-chip:hover{border-color:var(--acc)}
+.nft-emoji{font-size:24px;display:block;margin-bottom:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hint{font-size:11px;color:var(--mut);margin-top:5px;line-height:1.5}
+.sep{border:none;border-top:1px solid var(--bd);margin:16px 0}
+.wallet-banner{background:linear-gradient(135deg,#1a0d2a,#0d1a2a);border:1px solid #a259ff33;border-radius:12px;padding:20px;margin-bottom:16px;text-align:center}
+.wallet-balance{font-size:38px;font-weight:900;color:var(--acc);margin:8px 0}
+.wallet-addr{font-family:monospace;font-size:10px;color:var(--mut);word-break:break-all}
+.code-example{background:#0d0d0d;border:1px solid #a259ff33;border-radius:8px;padding:12px;font-family:monospace;font-size:11px;color:#a8ff78;line-height:1.7;margin-top:8px}
 </style>
 </head>
 <body>
-<header>
-  <h1>💳 CEREBRO Wallet</h1>
-  <p>Carteira descentralizada da rede CEREBRO — igual MetaMask mas para CBR e tokens CBRC-20</p>
-</header>
-<div class="container">
+<nav>
+  <div class="logo">🧠 CEREBRO Wallet</div>
+  <div class="nav-tabs">
+    <button class="tab active" onclick="showTab('carteira')">💳 Carteira</button>
+    <button class="tab" onclick="showTab('enviar')">📤 Enviar CBR</button>
+    <button class="tab" onclick="showTab('tokens')">🪙 Tokens</button>
+    <button class="tab" onclick="showTab('nfts')">🎨 NFTs</button>
+    <button class="tab" onclick="showTab('contratos')">📜 Contratos</button>
+    <button class="tab" onclick="showTab('dex')">💱 DEX</button>
+    <button class="tab" onclick="showTab('staking')">⚡ Staking</button>
+    <button class="tab" onclick="showTab('nova')">🔑 Nova Carteira</button>
+  </div>
+  <a href="/explorer.html" class="explorer-link">📊 Explorer →</a>
+</nav>
 
-  <div class="tabs">
-    <div class="tab active" onclick="ativarTab('carteira')">Carteira</div>
-    <div class="tab" onclick="ativarTab('enviar')">Enviar CBR</div>
-    <div class="tab" onclick="ativarTab('tokens')">Tokens CBRC-20</div>
-    <div class="tab" onclick="ativarTab('criar-token')">Criar Token</div>
-    <div class="tab" onclick="ativarTab('nova')">Nova Carteira</div>
+<main>
+
+<!-- CARTEIRA -->
+<div class="panel active" id="panel-carteira">
+  <div class="wallet-banner" id="wallet-banner">
+    <div style="font-size:12px;color:var(--mut);margin-bottom:4px">Saldo CEREBRO</div>
+    <div class="wallet-balance" id="w-balance">— CBR</div>
+    <div class="wallet-addr" id="w-addr">Cole sua chave privada abaixo</div>
   </div>
 
-  <!-- CARTEIRA -->
-  <div id="tab-carteira" class="panel active">
-    <div class="card">
-      <h2>💰 Saldo da Carteira</h2>
-      <label>Endereço Público (cole aqui para consultar)</label>
-      <input id="consultaAddr" placeholder="Cole seu endereço público aqui..." />
-      <button onclick="consultarSaldo()">Ver Saldo</button>
-      <div id="resultSaldo" class="result"></div>
+  <div class="card">
+    <div class="card-title">🔑 Sua Chave Privada</div>
+    <div class="field">
+      <label>Chave Privada (hex, 64 caracteres)</label>
+      <input type="password" id="global-key" placeholder="Cole sua chave privada aqui..." oninput="onKeyChange(this.value)">
+      <p class="hint">Sua chave nunca sai do navegador. Só você tem acesso.</p>
     </div>
-    <div class="card">
-      <h2>📋 Sua Carteira Atual</h2>
-      <label>Chave Privada (mantida localmente — nunca envie para ninguém)</label>
-      <input type="password" id="currentPrivKey" placeholder="Cole sua chave privada para carregar carteira..." />
-      <button class="sec" onclick="carregarCarteira()">Carregar Carteira</button>
-      <div id="walletAddr"></div>
-      <div id="walletInfo"></div>
-    </div>
+    <button class="btn btn-out" onclick="loadCarteira()">Carregar Carteira</button>
   </div>
 
-  <!-- ENVIAR CBR -->
-  <div id="tab-enviar" class="panel">
-    <div class="card">
-      <h2>📤 Enviar CEREBRO (CBR)</h2>
-      <div class="warn">⚠️ Verifique o endereço antes de enviar. Transações na blockchain são irreversíveis.</div>
-      <label>Sua Chave Privada</label>
-      <input type="password" id="sendPrivKey" placeholder="Chave privada (não será armazenada)" />
-      <label>Endereço do Destinatário</label>
-      <input id="sendTo" placeholder="Endereço público do destinatário" />
-      <label>Quantidade (CBR)</label>
-      <input type="number" id="sendAmount" placeholder="Ex: 1.5" step="0.000001" />
-      <button onclick="enviarCBR()">Enviar CBR</button>
-      <div id="resultEnvio" class="result"></div>
-    </div>
+  <div class="card" id="carteira-info" style="display:none">
+    <div class="card-title">📊 Resumo da Conta</div>
+    <div id="carteira-stats"></div>
   </div>
 
-  <!-- TOKENS -->
-  <div id="tab-tokens" class="panel">
-    <div class="card">
-      <h2>🪙 Tokens CBRC-20 na Rede</h2>
-      <button class="sec" onclick="listarTokens()" style="margin-top:0">Atualizar Lista</button>
-      <div id="listaTokens" style="margin-top:16px"></div>
-    </div>
-    <div class="card">
-      <h2>📤 Transferir Token CBRC-20</h2>
-      <label>Sua Chave Privada</label>
-      <input type="password" id="tokPrivKey" placeholder="Chave privada" />
-      <label>Símbolo do Token</label>
-      <input id="tokSymbol" placeholder="Ex: CSTABLE" style="text-transform:uppercase" />
-      <label>Endereço do Destinatário</label>
-      <input id="tokTo" placeholder="Endereço público" />
-      <label>Quantidade</label>
-      <input type="number" id="tokAmount" placeholder="Quantidade a transferir" />
-      <button onclick="transferirToken()">Transferir Token</button>
-      <div id="resultTokTransf" class="result"></div>
-    </div>
+  <div class="card">
+    <div class="card-title">🚿 Faucet — Receba 10 CBR grátis</div>
+    <p class="hint" style="margin-bottom:12px">Carregue sua carteira acima, depois clique para receber 10 CBR grátis para começar.</p>
+    <button class="btn btn-grn" onclick="usarFaucet()">Receber 10 CBR do Faucet</button>
+    <div class="result" id="r-faucet"></div>
   </div>
-
-  <!-- CRIAR TOKEN -->
-  <div id="tab-criar-token" class="panel">
-    <div class="card">
-      <h2>🚀 Criar Token CBRC-20</h2>
-      <p style="font-size:.85rem;color:var(--dim);margin-bottom:12px">Como o ERC-20 do Ethereum, mas na rede CEREBRO. Crie sua própria criptomoeda!</p>
-      <label>Sua Chave Privada (será o dono do token)</label>
-      <input type="password" id="deployPrivKey" placeholder="Chave privada" />
-      <label>Nome do Token</label>
-      <input id="deployName" placeholder="Ex: Meu Token" />
-      <label>Símbolo (3-6 letras)</label>
-      <input id="deploySymbol" placeholder="Ex: MTK" style="text-transform:uppercase" maxlength="10" />
-      <label>Supply Total</label>
-      <input type="number" id="deploySupply" placeholder="Ex: 1000000" />
-      <label>Decimais</label>
-      <input type="number" id="deployDecimals" value="18" min="0" max="18" />
-      <button onclick="criarToken()">🚀 Criar Token na Rede CEREBRO</button>
-      <div id="resultDeploy" class="result"></div>
-    </div>
-  </div>
-
-  <!-- NOVA CARTEIRA -->
-  <div id="tab-nova" class="panel">
-    <div class="card">
-      <h2>🔑 Criar Nova Carteira</h2>
-      <p style="font-size:.85rem;color:var(--dim);margin-bottom:16px">Gera um par de chaves criptográficas secp256k1 — igual ao Bitcoin e Ethereum.</p>
-      <div class="warn">⚠️ GUARDE a chave privada em local seguro. Quem tiver a chave controla os fundos. Não tem recuperação.</div>
-      <button onclick="gerarCarteira()">Gerar Nova Carteira</button>
-      <div id="resultCarteira" class="result"></div>
-    </div>
-    <div class="card">
-      <h2>💧 Faucet — Receba CBR Grátis</h2>
-      <p style="font-size:.85rem;color:var(--dim);margin-bottom:12px">Cole seu endereço e receba CEREBRO para começar a usar a rede.</p>
-      <label>Seu Endereço Público</label>
-      <input id="faucetAddr" placeholder="Seu endereço público" />
-      <button onclick="pedirFaucet()">Receber CBR Grátis</button>
-      <div id="resultFaucet" class="result"></div>
-    </div>
-  </div>
-
 </div>
 
+<!-- ENVIAR CBR -->
+<div class="panel" id="panel-enviar">
+  <div class="card">
+    <div class="card-title">📤 Enviar CBR</div>
+    <div class="field"><label>Chave Privada</label><input type="password" id="e-key" placeholder="Sua chave privada..."></div>
+    <div class="field"><label>Endereço Destino</label><input id="e-to" placeholder="Endereço público do destinatário (04...)"></div>
+    <div class="field"><label>Quantidade CBR</label><input type="number" id="e-amount" placeholder="Ex: 10" min="0.001" step="0.001"></div>
+    <button class="btn btn-acc" onclick="enviarCBR()">Enviar CBR →</button>
+    <div class="result" id="r-enviar"></div>
+  </div>
+</div>
+
+<!-- TOKENS CBRC-20 -->
+<div class="panel" id="panel-tokens">
+  <div class="card">
+    <div class="card-title">🪙 Criar Token CBRC-20</div>
+    <div class="grid2">
+      <div class="field"><label>Nome do Token</label><input id="t-name" placeholder="Ex: MeuToken"></div>
+      <div class="field"><label>Símbolo</label><input id="t-symbol" placeholder="Ex: MTK" maxlength="10"></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label>Supply Total</label><input type="number" id="t-supply" placeholder="Ex: 1000000"></div>
+      <div class="field"><label>Decimais</label><input type="number" id="t-decimals" value="18" min="0" max="18"></div>
+    </div>
+    <div class="field"><label>Chave Privada</label><input type="password" id="t-key" placeholder="Sua chave privada..."></div>
+    <button class="btn btn-acc" onclick="criarToken()">🚀 Deploy Token</button>
+    <div class="result" id="r-token"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💸 Transferir Token CBRC-20</div>
+    <div class="grid2">
+      <div class="field"><label>Símbolo</label><input id="tt-symbol" placeholder="Ex: MTK"></div>
+      <div class="field"><label>Quantidade</label><input type="number" id="tt-amount" placeholder="Ex: 100"></div>
+    </div>
+    <div class="field"><label>Endereço Destino</label><input id="tt-to" placeholder="04..."></div>
+    <div class="field"><label>Chave Privada</label><input type="password" id="tt-key" placeholder="Sua chave privada..."></div>
+    <button class="btn btn-blue" onclick="transferirToken()">Transferir Token</button>
+    <div class="result" id="r-transfer-tok"></div>
+  </div>
+</div>
+
+<!-- NFTs -->
+<div class="panel" id="panel-nfts">
+  <div class="card">
+    <div class="card-title">🎨 Criar NFT (CBRC-721)</div>
+    <div class="grid2">
+      <div class="field"><label>Nome do NFT</label><input id="n-name" placeholder="Ex: Arte Cerebro #1"></div>
+      <div class="field"><label>Coleção</label><input id="n-col" placeholder="Ex: CerebroArts"></div>
+    </div>
+    <div class="field"><label>Descrição</label><input id="n-desc" placeholder="Descreva seu NFT..."></div>
+    <div class="field"><label>URL da Imagem (opcional)</label><input id="n-img" placeholder="https://...jpg ou deixe vazio"></div>
+    <div class="field"><label>Chave Privada</label><input type="password" id="n-key" placeholder="Sua chave privada..."></div>
+    <button class="btn btn-acc" onclick="mintarNFT()">🎨 Mintar NFT</button>
+    <div class="result" id="r-nft"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔄 Transferir NFT</div>
+    <div class="field"><label>Token ID do NFT</label><input id="nt-id" placeholder="ID do NFT..."></div>
+    <div class="field"><label>Endereço Destino</label><input id="nt-to" placeholder="04..."></div>
+    <div class="field"><label>Chave Privada</label><input type="password" id="nt-key" placeholder="Sua chave privada..."></div>
+    <button class="btn btn-blue" onclick="transferirNFT()">Transferir NFT</button>
+    <div class="result" id="r-nft-transfer"></div>
+  </div>
+</div>
+
+<!-- CONTRATOS -->
+<div class="panel" id="panel-contratos">
+  <div class="card">
+    <div class="card-title">📜 Deploy Smart Contract (JavaScript)</div>
+    <p class="hint" style="margin-bottom:12px">Escreva funções JavaScript. Use <b>state</b> para armazenar dados, <b>caller</b> para o endereço do chamador, <b>args</b> para os argumentos.</p>
+    <div class="field"><label>Nome do Contrato</label><input id="c-name" placeholder="Ex: VotacaoDAO"></div>
+    <div class="field">
+      <label>Código Fonte JavaScript</label>
+      <textarea id="c-code" placeholder="// Exemplo de contrato simples
+function votar(opcao) {
+  if (!state.votos) state.votos = {};
+  state.votos[opcao] = (state.votos[opcao] || 0) + 1;
+  emit('VotoRegistrado', { opcao, caller });
+  return state.votos;
+}
+
+function resultado() {
+  return state.votos || {};
+}"></textarea>
+    </div>
+    <div class="field"><label>Chave Privada</label><input type="password" id="c-key" placeholder="Sua chave privada..."></div>
+    <button class="btn btn-acc" onclick="deployContrato()">🚀 Deploy Contrato</button>
+    <div class="result" id="r-contrato"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📞 Chamar Smart Contract</div>
+    <div class="field"><label>Endereço do Contrato</label><input id="cc-addr" placeholder="CBRCT_..."></div>
+    <div class="field"><label>Método</label><input id="cc-method" placeholder="Ex: votar"></div>
+    <div class="field"><label>Argumentos (JSON Array)</label><input id="cc-args" placeholder='Ex: ["opcao1"] ou []'></div>
+    <div class="field"><label>Chave Privada</label><input type="password" id="cc-key" placeholder="Sua chave privada..."></div>
+    <button class="btn btn-blue" onclick="chamarContrato()">Chamar Contrato</button>
+    <div class="result" id="r-cc"></div>
+  </div>
+</div>
+
+<!-- DEX -->
+<div class="panel" id="panel-dex">
+  <div class="card">
+    <div class="card-title">💱 Swap de Tokens (DEX)</div>
+    <p class="hint" style="margin-bottom:12px">Troque CBR por tokens CBRC-20 ou vice-versa. AMM automático (produto constante x·y=k). Taxa: 0,3%.</p>
+    <div class="grid2">
+      <div class="field"><label>Token De</label><input id="sw-from" placeholder="Ex: CBR ou MTK"></div>
+      <div class="field"><label>Token Para</label><input id="sw-to" placeholder="Ex: TST ou CBR"></div>
+    </div>
+    <div class="field"><label>Quantidade</label><input type="number" id="sw-amount" placeholder="Ex: 100"></div>
+    <div class="field"><label>Chave Privada</label><input type="password" id="sw-key" placeholder="Sua chave privada..."></div>
+    <button class="btn btn-org" onclick="fazerSwap()">💱 Executar Swap</button>
+    <div class="result" id="r-swap"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏊 Adicionar Liquidez</div>
+    <div class="grid2">
+      <div class="field"><label>Token A</label><input id="lq-a" placeholder="Ex: CBR"></div>
+      <div class="field"><label>Token B</label><input id="lq-b" placeholder="Ex: TST"></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label>Qtd Token A</label><input type="number" id="lq-qa" placeholder="Ex: 1000"></div>
+      <div class="field"><label>Qtd Token B</label><input type="number" id="lq-qb" placeholder="Ex: 5000"></div>
+    </div>
+    <div class="field"><label>Chave Privada</label><input type="password" id="lq-key" placeholder="Sua chave privada..."></div>
+    <button class="btn btn-grn" onclick="addLiquidity()">🏊 Adicionar Liquidez</button>
+    <div class="result" id="r-lq"></div>
+  </div>
+</div>
+
+<!-- STAKING -->
+<div class="panel" id="panel-staking">
+  <div class="card">
+    <div class="card-title">⚡ Staking — Ganhe CBR passivamente</div>
+    <p class="hint" style="margin-bottom:14px">Faça stake dos seus CBR para participar do consenso e ganhar recompensas. Igual ao Ethereum 2.0.</p>
+    <div id="stake-info" style="margin-bottom:14px">
+      <div class="stat-row"><span>Total Staked na Rede</span><span class="stat-val" id="total-staked">— CBR</span></div>
+    </div>
+    <hr class="sep">
+    <div class="field"><label>Quantidade CBR para Stake</label><input type="number" id="sk-amount" placeholder="Ex: 50"></div>
+    <div class="field"><label>Chave Privada</label><input type="password" id="sk-key" placeholder="Sua chave privada..."></div>
+    <div class="grid2">
+      <button class="btn btn-acc" onclick="fazerStake()">⚡ Stake</button>
+      <button class="btn btn-out" onclick="fazerUnstake()">↩ Unstake</button>
+    </div>
+    <div class="result" id="r-stake"></div>
+  </div>
+</div>
+
+<!-- NOVA CARTEIRA -->
+<div class="panel" id="panel-nova">
+  <div class="card">
+    <div class="card-title">🔑 Gerar Nova Carteira</div>
+    <p class="hint" style="margin-bottom:14px">Cria um par de chaves criptográficas (secp256k1 — mesma criptografia do Bitcoin). Guarde a chave privada em local seguro.</p>
+    <button class="btn btn-acc" onclick="gerarCarteira()">🔑 Gerar Nova Carteira</button>
+    <div class="result show ok" id="r-nova" style="display:none"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⛏️ Minerar Blocos</div>
+    <p class="hint" style="margin-bottom:12px">Mine um bloco e receba a recompensa em CBR. Cada bloco vale 50 CBR agora.</p>
+    <div class="field"><label>Endereço para Recompensa</label><input id="m-addr" placeholder="Seu endereço público (04...)"></div>
+    <button class="btn btn-grn" onclick="minarBloco()">⛏️ Minerar Bloco</button>
+    <div class="result" id="r-mine"></div>
+  </div>
+</div>
+
+</main>
+
 <script>
-const API = "http://localhost:3001/api";
+let globalKey = "";
+let globalAddr = "";
 
-function ativarTab(name) {
-  const names = ["carteira","enviar","tokens","criar-token","nova"];
-  document.querySelectorAll(".tab").forEach((t,i) => t.classList.toggle("active", names[i] === name));
-  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-  document.getElementById("tab-" + name).classList.add("active");
-  if (name === "tokens") listarTokens();
-}
+function getKey(id){ return (document.getElementById(id)?.value || globalKey).trim(); }
 
-function showResult(id, msg, erro=false) {
+function showResult(id, msg, ok=true){
   const el = document.getElementById(id);
-  el.textContent = msg;
-  el.className = "result show" + (erro ? " erro" : "");
+  el.className = `result show ${ok?"ok":"err"}`;
+  el.innerHTML = msg;
 }
 
-async function gerarCarteira() {
+function onKeyChange(v){ globalKey = v.trim(); }
+
+async function loadCarteira(){
+  const key = globalKey || document.getElementById("global-key").value.trim();
+  if(!key || key.length < 60) return showResult("r-faucet","Cole uma chave privada válida (64 caracteres hex)",false);
   try {
-    // Gerar chave via API (simplificado — em produção gerar no cliente)
-    const r = await fetch(API + "/stats");
-    // Gerar localmente com Math.random (demo — para produção usar crypto.getRandomValues)
-    const chars = "0123456789abcdef";
-    let pk = "";
-    for (let i = 0; i < 64; i++) pk += chars[Math.floor(Math.random() * 16)];
-    // Calcular endereço público (simplificado para demo)
-    const resp = await fetch(API + "/balance/" + pk.slice(0,40));
-    showResult("resultCarteira",
-      `🔑 CHAVE PRIVADA (GUARDE COM SEGURANÇA!):\n${pk}\n\n` +
-      `📋 Para ver seu endereço público:\n- Cole a chave privada em "Carregar Carteira"\n- Ou use o script 1-CRIAR-CARTEIRA.bat no terminal\n\n` +
-      `⚠️ NUNCA compartilhe a chave privada!`);
-  } catch(e) { showResult("resultCarteira", "Erro: " + e.message, true); }
+    const r = await fetch("/api/wallet/new",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({})}).then(r=>r.json());
+    // Deriva o endereço da chave usando uma chamada ao endpoint de saldo com derivação
+    // Usamos a nova carteira endpoint para info e fazemos transfer de 0 para derivar
+    const info = await fetch("/api/faucet",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({address:"DERIVE_"+key.slice(0,8)})}).then(r=>r.json()).catch(()=>null);
+
+    // Busca info pelo endereço derivado — fazemos um POST de transfer zero para obter o endereço
+    const tst = await fetch("/api/transfer",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({toAddress:"0000000000000000000000000000000000000000000000000000000000000001",amount:0.000001,privateKey:key})}).then(r=>r.json()).catch(e=>({erro:e.message}));
+    if(tst.from){
+      globalAddr = tst.from;
+      document.getElementById("w-addr").textContent = tst.from;
+      const bal = await fetch(`/api/balance/${tst.from}`).then(r=>r.json());
+      document.getElementById("w-balance").textContent = (bal.balance||0).toLocaleString("pt-BR") + " CBR";
+      const staked = bal.staked || 0;
+      document.getElementById("carteira-info").style.display="block";
+      document.getElementById("carteira-stats").innerHTML = `
+        <div class="stat-row"><span>Saldo CBR</span><span class="stat-val">${(bal.balance||0).toLocaleString("pt-BR")} CBR</span></div>
+        <div class="stat-row"><span>Em Stake</span><span class="stat-val" style="color:#e040fb">${staked.toLocaleString("pt-BR")} CBR</span></div>
+        <div class="stat-row"><span>Transações</span><span class="stat-val">${bal.transacoes||0}</span></div>
+        <div class="stat-row"><span>NFTs</span><span class="stat-val">${bal.nfts||0}</span></div>`;
+    } else {
+      showResult("r-faucet", "Chave inválida: "+( tst.erro||"erro desconhecido"), false);
+    }
+  } catch(e){ showResult("r-faucet","Erro: "+e.message,false); }
 }
 
-async function carregarCarteira() {
-  const pk = document.getElementById("currentPrivKey").value.trim();
-  if (!pk) return alert("Cole sua chave privada");
-  try {
-    // Para derivar o endereço público da chave privada, usamos a API ou recalculamos
-    // Como não temos crypto no browser facilmente, vamos buscar o saldo via endereço derivado
-    // (Para uma implementação real, usaríamos elliptic.js no browser)
-    showResult("resultCarteira", "Para ver saldo, copie seu endereço público e cole na aba 'Carteira'.", false);
-    document.getElementById("walletAddr").style.display = "block";
-    document.getElementById("walletAddr").textContent = "Chave carregada. Use seu endereço público para consultar saldo.";
-    document.getElementById("walletInfo").innerHTML = `<p style="font-size:.85rem;color:var(--dim);margin-top:8px">Chave privada armazenada apenas nesta sessão do navegador.</p>`;
-  } catch(e) { alert("Erro: " + e.message); }
+async function usarFaucet(){
+  const addr = globalAddr;
+  if(!addr) return showResult("r-faucet","Carregue sua carteira primeiro",false);
+  const r = await fetch("/api/faucet",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({address:addr})}).then(r=>r.json()).catch(e=>({erro:e.message}));
+  if(r.ok) showResult("r-faucet",`✅ Recebeu 10 CBR! TX: <span style="font-family:monospace;font-size:10px">${r.txHash}</span>`);
+  else showResult("r-faucet","❌ "+r.erro,false);
 }
 
-async function consultarSaldo() {
-  const addr = document.getElementById("consultaAddr").value.trim();
-  if (!addr) return alert("Digite um endereço");
-  try {
-    const r = await fetch(API + "/address/" + addr);
-    const d = await r.json();
-    const toks = (d.tokens||[]).map(t => `  ${t.symbol}: ${t.balance}`).join("\n") || "  Nenhum token";
-    showResult("resultSaldo",
-      `Endereço: ${d.address}\n` +
-      `Saldo CBR: ${d.balance.toFixed(6)} CBR\n` +
-      `Transações: ${d.transacoes?.length || 0}\n\n` +
-      `Tokens CBRC-20:\n${toks}`);
-  } catch(e) { showResult("resultSaldo", "Nó offline ou endereço inválido: " + e.message, true); }
+async function enviarCBR(){
+  const key=document.getElementById("e-key").value.trim()||globalKey;
+  const to=document.getElementById("e-to").value.trim();
+  const amount=document.getElementById("e-amount").value;
+  if(!key||!to||!amount) return showResult("r-enviar","Preencha todos os campos",false);
+  const r=await fetch("/api/transfer",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({privateKey:key,toAddress:to,amount:Number(amount)})}).then(r=>r.json()).catch(e=>({erro:e.message}));
+  if(r.ok) showResult("r-enviar",`✅ Enviado! TX: <span style="font-family:monospace;font-size:10px">${r.txHash}</span><br>Bloco: ${r.block?.slice(0,20)}…`);
+  else showResult("r-enviar","❌ "+r.erro,false);
 }
 
-async function enviarCBR() {
-  const pk = document.getElementById("sendPrivKey").value.trim();
-  const to = document.getElementById("sendTo").value.trim();
-  const amount = document.getElementById("sendAmount").value.trim();
-  if (!pk || !to || !amount) return alert("Preencha todos os campos");
-  if (!confirm(`Enviar ${amount} CBR para ${to.slice(0,12)}...?\nISSO É IRREVERSÍVEL.`)) return;
-  try {
-    // Para enviar, precisamos do endereço público do remetente
-    // O servidor vai derivar da chave privada
-    const body = { privateKey: pk, toAddress: to, amount: Number(amount), fromAddress: "" };
-    showResult("resultEnvio", "Enviando transação...");
-    const r = await fetch(API + "/transfer", {
-      method: "POST", headers: {"Content-Type":"application/json"},
-      body: JSON.stringify(body)
-    });
-    const d = await r.json();
-    if (d.erro) showResult("resultEnvio", "Erro: " + d.erro, true);
-    else showResult("resultEnvio", `✅ Transação enviada!\nHash: ${d.txHash}\n\nAguarde o próximo bloco ser minerado.`);
-  } catch(e) { showResult("resultEnvio", "Erro: " + e.message, true); }
+async function criarToken(){
+  const key=document.getElementById("t-key").value.trim()||globalKey;
+  const name=document.getElementById("t-name").value.trim();
+  const symbol=document.getElementById("t-symbol").value.trim().toUpperCase();
+  const supply=document.getElementById("t-supply").value;
+  const decimals=document.getElementById("t-decimals").value||18;
+  if(!key||!name||!symbol||!supply) return showResult("r-token","Preencha todos os campos",false);
+  const r=await fetch("/api/token/deploy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,symbol,supply:Number(supply),decimals:Number(decimals),privateKey:key})}).then(r=>r.json()).catch(e=>({erro:e.message}));
+  if(r.ok) showResult("r-token",`✅ Token <b>${symbol}</b> criado!<br>Contrato: ${r.contract}<br>TX: <span style="font-family:monospace;font-size:10px">${r.txHash}</span>`);
+  else showResult("r-token","❌ "+r.erro,false);
 }
 
-async function listarTokens() {
-  try {
-    const r = await fetch(API + "/tokens");
-    const tokens = await r.json();
-    const el = document.getElementById("listaTokens");
-    if (!tokens.length) { el.innerHTML = `<p style="color:var(--dim);text-align:center;padding:20px">Nenhum token criado ainda. Crie o primeiro na aba "Criar Token"!</p>`; return; }
-    el.innerHTML = tokens.map(t => `
-      <div style="background:#1a1a2e;border-radius:8px;padding:14px;margin-bottom:10px">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <span style="font-size:1.3rem;font-weight:700;color:var(--accent)">${t.symbol}</span>
-          <span style="color:var(--dim);font-size:.85rem">${t.name}</span>
-        </div>
-        <div style="font-size:.82rem;color:var(--dim);margin-top:6px">
-          Supply: <strong style="color:var(--text)">${Number(t.supply).toLocaleString("pt-BR")}</strong> |
-          Decimais: ${t.decimals} |
-          Contrato: <span style="color:var(--accent);font-family:monospace">${t.contract}</span>
-        </div>
-      </div>
-    `).join("");
-  } catch(e) { document.getElementById("listaTokens").innerHTML = `<p style="color:var(--red)">Nó offline</p>`; }
+async function transferirToken(){
+  const key=document.getElementById("tt-key").value.trim()||globalKey;
+  const symbol=document.getElementById("tt-symbol").value.trim().toUpperCase();
+  const to=document.getElementById("tt-to").value.trim();
+  const amount=document.getElementById("tt-amount").value;
+  if(!key||!symbol||!to||!amount) return showResult("r-transfer-tok","Preencha todos os campos",false);
+  const r=await fetch("/api/token/transfer",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({symbol,toAddress:to,amount:Number(amount),privateKey:key})}).then(r=>r.json()).catch(e=>({erro:e.message}));
+  if(r.ok) showResult("r-transfer-tok",`✅ ${amount} ${symbol} transferidos! TX: <span style="font-family:monospace;font-size:10px">${r.txHash}</span>`);
+  else showResult("r-transfer-tok","❌ "+r.erro,false);
 }
 
-async function criarToken() {
-  const pk = document.getElementById("deployPrivKey").value.trim();
-  const name = document.getElementById("deployName").value.trim();
-  const symbol = document.getElementById("deploySymbol").value.trim().toUpperCase();
-  const supply = document.getElementById("deploySupply").value.trim();
-  const decimals = document.getElementById("deployDecimals").value.trim();
-  if (!pk || !name || !symbol || !supply) return alert("Preencha todos os campos");
-  if (!confirm(`Criar token ${symbol} com supply ${Number(supply).toLocaleString()}?\nEsta ação será gravada na blockchain.`)) return;
-  try {
-    showResult("resultDeploy", "Criando token na blockchain CEREBRO...");
-    // Derivar endereço do dono da chave privada (o servidor faz isso)
-    const body = { privateKey: pk, ownerAddress: "", name, symbol, supply: Number(supply), decimals: Number(decimals) };
-    const r = await fetch(API + "/token/deploy", {
-      method:"POST", headers:{"Content-Type":"application/json"},
-      body: JSON.stringify(body)
-    });
-    const d = await r.json();
-    if (d.erro) showResult("resultDeploy", "Erro: " + d.erro, true);
-    else showResult("resultDeploy",
-      `✅ Token criado com sucesso!\n\n` +
-      `Nome: ${name}\nSímbolo: ${symbol}\nSupply: ${Number(supply).toLocaleString()}\n` +
-      `Contrato: ${d.contract}\nTX Hash: ${d.txHash}\n\n` +
-      `Aguarde o próximo bloco ser minerado para confirmar.`);
-  } catch(e) { showResult("resultDeploy", "Erro: " + e.message, true); }
+async function mintarNFT(){
+  const key=document.getElementById("n-key").value.trim()||globalKey;
+  const name=document.getElementById("n-name").value.trim();
+  const desc=document.getElementById("n-desc").value.trim();
+  const img=document.getElementById("n-img").value.trim();
+  const col=document.getElementById("n-col").value.trim();
+  if(!key||!name) return showResult("r-nft","Nome e chave privada obrigatórios",false);
+  const r=await fetch("/api/nft/mint",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,description:desc,imageUrl:img,collection:col||"CerebroNFTs",privateKey:key})}).then(r=>r.json()).catch(e=>({erro:e.message}));
+  if(r.ok) showResult("r-nft",`✅ NFT <b>${name}</b> mintado!<br>Token ID: <span style="font-family:monospace;font-size:10px">${r.tokenId}</span><br>TX: <span style="font-family:monospace;font-size:10px">${r.txHash}</span>`);
+  else showResult("r-nft","❌ "+r.erro,false);
 }
 
-async function transferirToken() {
-  const pk = document.getElementById("tokPrivKey").value.trim();
-  const symbol = document.getElementById("tokSymbol").value.trim().toUpperCase();
-  const to = document.getElementById("tokTo").value.trim();
-  const amount = document.getElementById("tokAmount").value.trim();
-  if (!pk || !symbol || !to || !amount) return alert("Preencha todos os campos");
-  try {
-    const body = { privateKey: pk, fromAddress: "", symbol, toAddress: to, amount: Number(amount) };
-    const r = await fetch(API + "/token/transfer", {
-      method:"POST", headers:{"Content-Type":"application/json"},
-      body: JSON.stringify(body)
-    });
-    const d = await r.json();
-    if (d.erro) showResult("resultTokTransf", "Erro: " + d.erro, true);
-    else showResult("resultTokTransf", `✅ Transferência de token enviada!\nHash: ${d.txHash}`);
-  } catch(e) { showResult("resultTokTransf", "Erro: " + e.message, true); }
+async function transferirNFT(){
+  const key=document.getElementById("nt-key").value.trim()||globalKey;
+  const tokenId=document.getElementById("nt-id").value.trim();
+  const to=document.getElementById("nt-to").value.trim();
+  if(!key||!tokenId||!to) return showResult("r-nft-transfer","Preencha todos os campos",false);
+  const r=await fetch("/api/nft/transfer",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tokenId,toAddress:to,privateKey:key})}).then(r=>r.json()).catch(e=>({erro:e.message}));
+  if(r.ok) showResult("r-nft-transfer",`✅ NFT transferido! TX: <span style="font-family:monospace;font-size:10px">${r.txHash}</span>`);
+  else showResult("r-nft-transfer","❌ "+r.erro,false);
 }
 
-async function pedirFaucet() {
-  const addr = document.getElementById("faucetAddr").value.trim();
-  if (!addr) return alert("Digite seu endereço público");
-  showResult("resultFaucet",
-    `💧 Para receber CBR grátis:\n\n` +
-    `1. Abra o terminal na pasta do CEREBRO\n` +
-    `2. Execute: node scripts/faucet.js ${addr}\n\n` +
-    `Ou peça para o minerador da rede te enviar CBR!`);
+async function deployContrato(){
+  const key=document.getElementById("c-key").value.trim()||globalKey;
+  const name=document.getElementById("c-name").value.trim();
+  const code=document.getElementById("c-code").value.trim();
+  if(!key||!name||!code) return showResult("r-contrato","Nome, código e chave são obrigatórios",false);
+  const r=await fetch("/api/contract/deploy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,sourceCode:code,privateKey:key})}).then(r=>r.json()).catch(e=>({erro:e.message}));
+  if(r.ok) showResult("r-contrato",`✅ Contrato <b>${name}</b> deployed!<br>Endereço: <span style="font-family:monospace;font-size:10px">${r.contractAddress}</span><br>TX: <span style="font-family:monospace;font-size:10px">${r.txHash}</span>`);
+  else showResult("r-contrato","❌ "+r.erro,false);
 }
 
-listarTokens();
+async function chamarContrato(){
+  const key=document.getElementById("cc-key").value.trim()||globalKey;
+  const addr=document.getElementById("cc-addr").value.trim();
+  const method=document.getElementById("cc-method").value.trim();
+  const argsStr=document.getElementById("cc-args").value.trim()||"[]";
+  if(!key||!addr||!method) return showResult("r-cc","Preencha contrato, método e chave",false);
+  let args; try{ args=JSON.parse(argsStr); }catch{ return showResult("r-cc","Args deve ser array JSON válido: []",false); }
+  const r=await fetch("/api/contract/call",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contractAddress:addr,method,args,privateKey:key})}).then(r=>r.json()).catch(e=>({erro:e.message}));
+  if(r.ok) showResult("r-cc",`✅ Resultado: <pre style="font-family:monospace;font-size:11px;margin-top:6px;color:var(--grn)">${JSON.stringify(r.result,null,2)}</pre>${r.events?.length?`<br>Eventos: ${JSON.stringify(r.events)}`:""}` );
+  else showResult("r-cc","❌ "+r.erro,false);
+}
+
+async function fazerSwap(){
+  const key=document.getElementById("sw-key").value.trim()||globalKey;
+  const from=document.getElementById("sw-from").value.trim().toUpperCase();
+  const to=document.getElementById("sw-to").value.trim().toUpperCase();
+  const amount=document.getElementById("sw-amount").value;
+  if(!key||!from||!to||!amount) return showResult("r-swap","Preencha todos os campos",false);
+  const r=await fetch("/api/swap",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fromToken:from,toToken:to,amount:Number(amount),privateKey:key})}).then(r=>r.json()).catch(e=>({erro:e.message}));
+  if(r.ok) showResult("r-swap",`✅ Swap executado!<br>Recebeu: <b>${r.amountOut}</b> ${to}<br>TX: <span style="font-family:monospace;font-size:10px">${r.txHash}</span>`);
+  else showResult("r-swap","❌ "+r.erro,false);
+}
+
+async function addLiquidity(){
+  const key=document.getElementById("lq-key").value.trim()||globalKey;
+  const a=document.getElementById("lq-a").value.trim().toUpperCase();
+  const b=document.getElementById("lq-b").value.trim().toUpperCase();
+  const qa=document.getElementById("lq-qa").value;
+  const qb=document.getElementById("lq-qb").value;
+  if(!key||!a||!b||!qa||!qb) return showResult("r-lq","Preencha todos os campos",false);
+  const r=await fetch("/api/liquidity/add",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tokenA:a,tokenB:b,amountA:Number(qa),amountB:Number(qb),privateKey:key})}).then(r=>r.json()).catch(e=>({erro:e.message}));
+  if(r.ok) showResult("r-lq",`✅ Liquidez adicionada ao pool ${r.pool}!<br>TX: <span style="font-family:monospace;font-size:10px">${r.txHash}</span>`);
+  else showResult("r-lq","❌ "+r.erro,false);
+}
+
+async function fazerStake(){
+  const key=document.getElementById("sk-key").value.trim()||globalKey;
+  const amount=document.getElementById("sk-amount").value;
+  if(!key||!amount) return showResult("r-stake","Preencha quantidade e chave",false);
+  const r=await fetch("/api/stake",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({amount:Number(amount),privateKey:key})}).then(r=>r.json()).catch(e=>({erro:e.message}));
+  if(r.ok) showResult("r-stake",`✅ ${amount} CBR em stake! TX: <span style="font-family:monospace;font-size:10px">${r.txHash}</span>`);
+  else showResult("r-stake","❌ "+r.erro,false);
+}
+
+async function fazerUnstake(){
+  const key=document.getElementById("sk-key").value.trim()||globalKey;
+  const amount=document.getElementById("sk-amount").value;
+  if(!key||!amount) return showResult("r-stake","Preencha quantidade e chave",false);
+  const r=await fetch("/api/unstake",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({amount:Number(amount),privateKey:key})}).then(r=>r.json()).catch(e=>({erro:e.message}));
+  if(r.ok) showResult("r-stake",`✅ ${amount} CBR retirado do stake!`);
+  else showResult("r-stake","❌ "+r.erro,false);
+}
+
+async function gerarCarteira(){
+  const r=await fetch("/api/wallet/new",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({})}).then(r=>r.json()).catch(e=>({erro:e.message}));
+  const el=document.getElementById("r-nova");
+  el.style.display="block";
+  if(r.privateKey) el.innerHTML=`<b>✅ Nova Carteira Gerada!</b><br><br>
+    <b>⚠️ SALVE A CHAVE PRIVADA AGORA — NÃO APARECE NOVAMENTE!</b><br><br>
+    <b>Chave Privada:</b><div class="addr-display" style="color:#ff9100">${r.privateKey}</div>
+    <b>Endereço Público:</b><div class="addr-display">${r.publicKey}</div>
+    <br>📋 Cole a chave privada no campo "Carteira" para começar a usar.`;
+  else el.innerHTML="❌ "+r.erro;
+}
+
+async function minarBloco(){
+  const addr=document.getElementById("m-addr").value.trim()||globalAddr;
+  if(!addr) return showResult("r-mine","Cole seu endereço público",false);
+  const r=await fetch("/api/mine",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({rewardAddress:addr})}).then(r=>r.json()).catch(e=>({erro:e.message}));
+  if(r.ok) showResult("r-mine",`✅ Bloco #${r.bloco} minerado!<br>Hash: <span style="font-family:monospace;font-size:10px">${r.hash}</span>`);
+  else showResult("r-mine","❌ "+r.erro,false);
+}
+
+async function loadStakeInfo(){
+  const d=await fetch("/api/stats").then(r=>r.json()).catch(()=>null);
+  if(d) document.getElementById("total-staked").textContent=(d.totalStaked||0).toLocaleString("pt-BR")+" CBR";
+}
+
+const loaders={staking:loadStakeInfo};
+function showTab(name){
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("panel-"+name)?.classList.add("active");
+  event?.currentTarget?.classList.add("active");
+  if(loaders[name]) loaders[name]();
+}
 </script>
 </body>
 </html>

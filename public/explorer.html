@@ -2,256 +2,337 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CEREBRO Explorer</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CEREBRO Explorer v3</title>
 <style>
-  :root { --bg:#0a0a14; --card:#12121f; --accent:#a259ff; --green:#00e676; --gold:#ffd600; --text:#e0e0e0; --dim:#888; }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',Arial,sans-serif; min-height:100vh; }
-  header { background:var(--card); border-bottom:2px solid var(--accent); padding:16px 32px; display:flex; align-items:center; gap:16px; }
-  header h1 { font-size:1.6rem; color:var(--accent); letter-spacing:2px; }
-  header span { font-size:.85rem; color:var(--dim); }
-  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; padding:24px 32px; }
-  .stat { background:var(--card); border:1px solid #2a2a3f; border-radius:10px; padding:18px; text-align:center; }
-  .stat .val { font-size:2rem; font-weight:700; color:var(--accent); }
-  .stat .lbl { font-size:.8rem; color:var(--dim); margin-top:4px; }
-  .section { padding:0 32px 32px; }
-  h2 { font-size:1.1rem; color:var(--gold); margin-bottom:12px; border-bottom:1px solid #2a2a3f; padding-bottom:8px; }
-  .search { display:flex; gap:8px; margin-bottom:20px; }
-  .search input { flex:1; background:#1a1a2e; border:1px solid #3a3a5f; border-radius:8px; padding:10px 14px; color:var(--text); font-size:.95rem; }
-  .search input:focus { outline:none; border-color:var(--accent); }
-  .search button { background:var(--accent); border:none; border-radius:8px; padding:10px 20px; color:#fff; cursor:pointer; font-weight:600; }
-  table { width:100%; border-collapse:collapse; font-size:.88rem; }
-  th { background:#1a1a2e; padding:10px 12px; text-align:left; color:var(--dim); font-weight:600; }
-  td { padding:10px 12px; border-bottom:1px solid #1a1a2e; }
-  tr:hover td { background:#16162a; }
-  .hash { font-family:monospace; font-size:.8rem; color:var(--accent); cursor:pointer; }
-  .hash:hover { text-decoration:underline; }
-  .badge { display:inline-block; padding:2px 8px; border-radius:12px; font-size:.75rem; font-weight:600; }
-  .badge.transfer { background:#1a3a2a; color:var(--green); }
-  .badge.token { background:#2a1a3a; color:#cf88ff; }
-  .badge.deploy { background:#3a2a00; color:var(--gold); }
-  .badge.reward { background:#2a2a00; color:#ffc107; }
-  .tabs { display:flex; gap:4px; margin-bottom:20px; flex-wrap:wrap; }
-  .tab { background:#1a1a2e; border:1px solid #2a2a3f; border-radius:8px; padding:8px 18px; cursor:pointer; font-size:.9rem; }
-  .tab.active { background:var(--accent); border-color:var(--accent); color:#fff; }
-  .panel { display:none; }
-  .panel.active { display:block; }
-  .addr-result { background:var(--card); border:1px solid #2a2a3f; border-radius:10px; padding:20px; margin-bottom:16px; }
-  .addr-result .balance { font-size:1.8rem; font-weight:700; color:var(--green); }
-  .token-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-bottom:20px; }
-  .token-card { background:var(--card); border:1px solid #3a2a5f; border-radius:10px; padding:16px; }
-  .token-card .symbol { font-size:1.4rem; font-weight:700; color:var(--accent); }
-  .token-card .name { color:var(--dim); font-size:.85rem; margin:4px 0 8px; }
-  #statusDot { width:8px; height:8px; border-radius:50%; background:var(--green); display:inline-block; margin-right:6px; animation:pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-  .empty { color:var(--dim); text-align:center; padding:40px; font-size:.95rem; }
+:root{--acc:#a259ff;--grn:#00e676;--blue:#2979ff;--org:#ff9100;--bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;--bd:#2a2a2a;--txt:#f0f0f0;--mut:#888}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+nav{display:flex;align-items:center;gap:12px;padding:12px 20px;background:var(--bg2);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.logo{font-size:18px;font-weight:900;color:var(--acc)}
+.dot-live{width:8px;height:8px;background:#ff1744;border-radius:50%;animation:pulse 1.5s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.nav-tabs{display:flex;gap:2px;flex-wrap:wrap}
+.tab{padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;color:var(--mut);border:none;background:none;transition:.15s}
+.tab:hover,.tab.active{background:var(--bg3);color:var(--txt)}
+.tab.active{color:var(--acc)}
+.search-box{display:flex;gap:6px;margin-left:auto}
+.search-box input{background:var(--bg3);border:1px solid var(--bd);border-radius:7px;color:var(--txt);padding:7px 12px;font-size:12px;width:240px;outline:none}
+.search-box input:focus{border-color:var(--acc)}
+.btn{padding:7px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;border:none}
+.btn-acc{background:var(--acc);color:#fff}
+.btn-out{background:transparent;border:1px solid var(--bd);color:var(--mut)}
+.btn-out:hover{border-color:var(--acc);color:var(--acc)}
+.stats-bar{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--bd);border-bottom:1px solid var(--bd)}
+.stat{background:var(--bg2);padding:12px;text-align:center}
+.stat-v{font-size:18px;font-weight:900;color:var(--acc)}
+.stat-l{font-size:9px;color:var(--mut);text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+main{padding:16px 20px;max-width:1400px;margin:0 auto}
+.panel{display:none}.panel.active{display:block}
+.card{background:var(--bg3);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:12px}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.card-title{font-size:13px;font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;color:var(--mut);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.8px;padding:7px 10px;border-bottom:1px solid var(--bd)}
+td{padding:9px 10px;border-bottom:1px solid #1a1a1a;vertical-align:middle}
+tr:last-child td{border:none}
+tr:hover td{background:#ffffff04}
+.hash{font-family:monospace;font-size:11px;color:var(--acc)}
+.addr{font-family:monospace;font-size:10px;color:var(--mut)}
+.badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px}
+.b-tx{background:#0d2a0d;color:var(--grn);border:1px solid #00e67633}
+.b-tok{background:#1a1225;color:var(--acc);border:1px solid #a259ff33}
+.b-nft{background:#1a1a00;color:#ffd600;border:1px solid #ffd60033}
+.b-con{background:#001a2a;color:var(--blue);border:1px solid #2979ff33}
+.b-swap{background:#2a1a00;color:var(--org);border:1px solid #ff910033}
+.b-stk{background:#1a0d1a;color:#e040fb;border:1px solid #e040fb33}
+#live-feed{max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:5px}
+.feed-item{background:var(--bg2);border:1px solid var(--bd);border-radius:7px;padding:8px 12px;display:flex;align-items:center;gap:8px;animation:fadein .3s}
+@keyframes fadein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.nft-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.nft-card{background:var(--bg2);border:1px solid var(--bd);border-radius:9px;overflow:hidden;cursor:pointer;transition:.2s}
+.nft-card:hover{border-color:var(--acc)}
+.nft-img{width:100%;aspect-ratio:1;background:#1a1225;display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden}
+.nft-img img{width:100%;height:100%;object-fit:cover}
+.nft-info{padding:9px}
+.nft-name{font-size:12px;font-weight:700;margin-bottom:2px}
+.nft-col{font-size:10px;color:var(--mut)}
+.code-block{background:#0d0d0d;border:1px solid var(--bd);border-radius:7px;padding:12px;font-family:monospace;font-size:11px;color:#a8ff78;line-height:1.6;overflow-x:auto;max-height:180px;overflow-y:auto}
+.pool-bar{height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;margin-top:5px}
+.pool-fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--blue));border-radius:3px}
+.empty{text-align:center;padding:36px;color:var(--mut);font-size:13px}
+.empty span{font-size:28px;display:block;margin-bottom:8px}
+.modal{display:none;position:fixed;inset:0;background:#000a;z-index:200;align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-box{background:var(--bg3);border:1px solid var(--bd);border-radius:14px;padding:22px;max-width:580px;width:90%;max-height:80vh;overflow-y:auto}
+.modal-title{font-size:15px;font-weight:800;margin-bottom:14px;color:var(--acc)}
+.close-m{float:right;cursor:pointer;background:none;border:none;color:var(--txt);font-size:18px}
+@media(max-width:768px){.stats-bar{grid-template-columns:repeat(4,1fr)}.grid2,.grid3{grid-template-columns:1fr}.search-box input{width:160px}}
 </style>
 </head>
 <body>
-<header>
-  <div>
-    <h1>⚡ CEREBRO Explorer</h1>
-    <span id="statusDot"></span><span id="status">Conectando...</span>
+<nav>
+  <div class="logo">🧠 CEREBRO</div>
+  <div class="dot-live" id="ws-dot"></div>
+  <div class="nav-tabs">
+    <button class="tab active" onclick="showTab('blocos')">⛓️ Blocos</button>
+    <button class="tab" onclick="showTab('txs')">📋 Transações</button>
+    <button class="tab" onclick="showTab('tokens')">🪙 Tokens</button>
+    <button class="tab" onclick="showTab('nfts')">🎨 NFTs</button>
+    <button class="tab" onclick="showTab('contratos')">📜 Contratos</button>
+    <button class="tab" onclick="showTab('dex')">💱 DEX</button>
+    <button class="tab" onclick="showTab('endereco')">📬 Endereço</button>
   </div>
-</header>
-
-<div class="stats" id="stats"></div>
-
-<div class="section">
-  <div class="search">
-    <input id="searchInput" placeholder="Buscar endereço, hash de bloco ou índice..." />
-    <button onclick="buscar()">Buscar</button>
+  <div class="search-box">
+    <input id="search" placeholder="Endereço / Hash / Bloco #..." onkeydown="if(event.key==='Enter')buscar()">
+    <button class="btn btn-acc" onclick="buscar()">Buscar</button>
   </div>
+</nav>
 
-  <div class="tabs">
-    <div class="tab active" onclick="ativarTab('blocos')">Blocos</div>
-    <div class="tab" onclick="ativarTab('txs')">Transações</div>
-    <div class="tab" onclick="ativarTab('tokens')">Tokens CBRC-20</div>
-    <div class="tab" onclick="ativarTab('endereco')">Endereço</div>
+<div class="stats-bar">
+  <div class="stat"><div class="stat-v" id="s-blocos">—</div><div class="stat-l">Blocos</div></div>
+  <div class="stat"><div class="stat-v" id="s-txs">—</div><div class="stat-l">Transações</div></div>
+  <div class="stat"><div class="stat-v" id="s-supply">—</div><div class="stat-l">CBR Supply</div></div>
+  <div class="stat"><div class="stat-v" id="s-tokens">—</div><div class="stat-l">Tokens</div></div>
+  <div class="stat"><div class="stat-v" id="s-nfts">—</div><div class="stat-l">NFTs</div></div>
+  <div class="stat"><div class="stat-v" id="s-contratos">—</div><div class="stat-l">Contratos</div></div>
+  <div class="stat"><div class="stat-v" id="s-tps" style="color:var(--grn)">— TPS</div><div class="stat-l">Velocidade</div></div>
+</div>
+
+<main>
+<div class="panel active" id="panel-blocos">
+  <div class="grid2">
+    <div class="card">
+      <div class="card-head"><span class="card-title">⛓️ Últimos Blocos</span><button class="btn btn-out" onclick="loadBlocos()">↻ Atualizar</button></div>
+      <table id="tbl-blocos"><tr><th>#</th><th>Hash</th><th>Txs</th><th>Hora</th></tr></table>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="card-title">⚡ Feed em Tempo Real</span><span class="badge b-tx" id="ws-status">Conectando...</span></div>
+      <div id="live-feed"></div>
+    </div>
   </div>
+</div>
 
-  <div id="tab-blocos" class="panel active">
-    <h2>Blocos Recentes</h2>
-    <table>
-      <thead><tr><th>#</th><th>Hash</th><th>TXs</th><th>Timestamp</th><th>Nonce</th></tr></thead>
-      <tbody id="tblocos"></tbody>
-    </table>
+<div class="panel" id="panel-txs">
+  <div class="card">
+    <div class="card-head"><span class="card-title">📋 Todas as Transações</span><button class="btn btn-out" onclick="loadTxs()">↻</button></div>
+    <table id="tbl-txs"><tr><th>Hash</th><th>Tipo</th><th>De</th><th>Para</th><th>Valor</th><th>Bloco</th></tr></table>
   </div>
+</div>
 
-  <div id="tab-txs" class="panel">
-    <h2>Todas as Transações</h2>
-    <table>
-      <thead><tr><th>Tipo</th><th>De</th><th>Para</th><th>Valor/Token</th><th>Bloco</th></tr></thead>
-      <tbody id="ttxs"></tbody>
-    </table>
+<div class="panel" id="panel-tokens">
+  <div class="card">
+    <div class="card-head"><span class="card-title">🪙 Tokens CBRC-20</span></div>
+    <div id="tokens-list"></div>
   </div>
+</div>
 
-  <div id="tab-tokens" class="panel">
-    <h2>Tokens CBRC-20 na Rede</h2>
-    <div id="token-list" class="token-list"></div>
+<div class="panel" id="panel-nfts">
+  <div class="card">
+    <div class="card-head"><span class="card-title">🎨 Galeria NFTs CBRC-721</span><span id="nft-count" class="badge b-nft">0 NFTs</span></div>
+    <div id="nft-grid" class="nft-grid"></div>
   </div>
+</div>
 
-  <div id="tab-endereco" class="panel">
-    <h2>Consultar Endereço</h2>
-    <div id="addr-result"></div>
+<div class="panel" id="panel-contratos">
+  <div class="card">
+    <div class="card-head"><span class="card-title">📜 Smart Contracts JavaScript</span></div>
+    <div id="contratos-list"></div>
+  </div>
+</div>
+
+<div class="panel" id="panel-dex">
+  <div class="card">
+    <div class="card-head"><span class="card-title">💱 DEX — Pools de Liquidez</span></div>
+    <div id="pools-list"></div>
+  </div>
+</div>
+
+<div class="panel" id="panel-endereco">
+  <div id="addr-result"><div class="card"><div class="empty"><span>📬</span>Cole um endereço na busca acima para ver o perfil completo</div></div></div>
+</div>
+</main>
+
+<div class="modal" id="modal-nft" onclick="closeModal('modal-nft')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <button class="close-m" onclick="closeModal('modal-nft')">✕</button>
+    <div class="modal-title">🎨 NFT Detalhe</div>
+    <div id="modal-nft-content"></div>
   </div>
 </div>
 
 <script>
-const API = "http://localhost:3001/api";
-let activeTab = "blocos";
+const TIPOS = {TRANSFER:"b-tx",TOKEN_DEPLOY:"b-tok",TOKEN_TRANSFER:"b-tok",NFT_MINT:"b-nft",NFT_TRANSFER:"b-nft",CONTRACT_DEPLOY:"b-con",CONTRACT_CALL:"b-con",STAKE:"b-stk",UNSTAKE:"b-stk",SWAP:"b-swap",ADD_LIQUIDITY:"b-swap"};
+const feed = document.getElementById("live-feed");
+let ws;
 
-function ativarTab(name) {
-  activeTab = name;
-  document.querySelectorAll(".tab").forEach((t,i) => {
-    const names = ["blocos","txs","tokens","endereco"];
-    t.classList.toggle("active", names[i] === name);
-  });
-  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-  document.getElementById("tab-" + name).classList.add("active");
-  if (name === "tokens") carregarTokens();
+function connectWS(){
+  const proto = location.protocol==="https:"?"wss":"ws";
+  ws = new WebSocket(`${proto}://${location.host}`);
+  ws.onopen = ()=>{ document.getElementById("ws-dot").style.background="var(--grn)"; document.getElementById("ws-status").textContent="● Ao Vivo"; };
+  ws.onmessage = e=>{
+    const m = JSON.parse(e.data);
+    if(m.type==="CONNECTED"||m.type==="NEW_BLOCK") { if(m.data?.stats) updateStats(m.data.stats); else if(m.data?.blocos) updateStats(m.data); loadBlocos(); }
+    if(m.type==="NEW_TX") addFeed("📤","TX: "+(m.data?.type||"TRANSFER"),"b-tok");
+    if(m.type==="NEW_NFT") addFeed("🎨","NFT: "+(m.data?.name||""),"b-nft");
+    if(m.type==="NEW_CONTRACT") addFeed("📜","Contrato: "+(m.data?.name||""),"b-con");
+    if(m.type==="NEW_SWAP") addFeed("💱",`Swap: ${m.data?.fromToken}→${m.data?.toToken}`,"b-swap");
+    if(m.type==="CONNECTED") updateStats(m.data);
+  };
+  ws.onclose = ()=>{ document.getElementById("ws-dot").style.background="#ff1744"; setTimeout(connectWS,3000); };
 }
 
-function shortHash(h) { return h ? h.slice(0,8)+"..."+h.slice(-6) : "—"; }
-function shortAddr(a) { return a ? a.slice(0,8)+"..."+a.slice(-6) : "Sistema"; }
-function tsToDate(ts) { return ts ? new Date(ts).toLocaleString("pt-BR") : "—"; }
-
-async function carregarStats() {
-  try {
-    const r = await fetch(API + "/stats");
-    const d = await r.json();
-    document.getElementById("status").textContent = "Online — " + d.versao;
-    document.getElementById("stats").innerHTML = `
-      <div class="stat"><div class="val">${d.blocos}</div><div class="lbl">Blocos Minerados</div></div>
-      <div class="stat"><div class="val">${d.recompensaAtual.toFixed(4)}</div><div class="lbl">Recompensa Atual (CBR)</div></div>
-      <div class="stat"><div class="val">${d.supplyTotal.toFixed(2)}</div><div class="lbl">Supply em Circulação</div></div>
-      <div class="stat"><div class="val">${d.supplyMaximo.toLocaleString("pt-BR")}</div><div class="lbl">Supply Máximo</div></div>
-      <div class="stat"><div class="val">${d.tokens}</div><div class="lbl">Tokens CBRC-20</div></div>
-      <div class="stat"><div class="val">${d.pendentesTx}</div><div class="lbl">TXs Pendentes</div></div>
-    `;
-  } catch(e) {
-    document.getElementById("status").textContent = "Offline — verifique o nó";
-    document.getElementById("statusDot").style.background = "#f44";
-  }
+function addFeed(icon,text,cls){
+  const el=document.createElement("div"); el.className="feed-item";
+  el.innerHTML=`<span style="font-size:14px">${icon}</span><span class="badge ${cls}">${text}</span><span style="color:var(--mut);font-size:10px;margin-left:auto">${new Date().toLocaleTimeString("pt-BR")}</span>`;
+  feed.prepend(el); if(feed.children.length>60) feed.lastChild.remove();
 }
 
-async function carregarBlocos() {
-  try {
-    const r = await fetch(API + "/chain?limit=30");
-    const d = await r.json();
-    document.getElementById("tblocos").innerHTML = d.blocos.map(b => `
-      <tr>
-        <td>${d.total - 1 - d.blocos.indexOf(b)}</td>
-        <td><span class="hash" onclick="buscarHash('${b.hash}')">${shortHash(b.hash)}</span></td>
-        <td>${b.transactions?.length || 0}</td>
-        <td>${tsToDate(b.timestamp)}</td>
-        <td>${b.nonce?.toLocaleString("pt-BR") || 0}</td>
-      </tr>
-    `).join("");
-  } catch(e) {}
+async function loadStats(){
+  const d=await fetch("/api/stats").then(r=>r.json()).catch(()=>null);
+  if(d) updateStats(d);
+}
+function updateStats(d){
+  if(!d) return;
+  document.getElementById("s-blocos").textContent=(d.blocos||0).toLocaleString("pt-BR");
+  document.getElementById("s-txs").textContent=(d.transacoesTotal||0).toLocaleString("pt-BR");
+  document.getElementById("s-supply").textContent=(d.supplyTotal||0).toLocaleString("pt-BR")+" CBR";
+  document.getElementById("s-tokens").textContent=d.tokens||0;
+  document.getElementById("s-nfts").textContent=d.nfts||0;
+  document.getElementById("s-contratos").textContent=d.contratos||0;
+  document.getElementById("s-tps").textContent=(d.tps||0)+" TPS";
 }
 
-async function carregarTxs() {
-  try {
-    const r = await fetch(API + "/chain?limit=100");
-    const d = await r.json();
-    const rows = [];
-    d.blocos.forEach((b, bi) => {
-      (b.transactions || []).forEach(tx => {
-        let tipo = tx.fromAddress === null ? "reward" : (tx.type === "TOKEN_TRANSFER" ? "token" : tx.type === "TOKEN_DEPLOY" ? "deploy" : "transfer");
-        let valor = tx.type === "TOKEN_TRANSFER" ? `${tx.data?.amount} ${tx.data?.symbol}` :
-                    tx.type === "TOKEN_DEPLOY"   ? `Deploy ${tx.data?.symbol} (${tx.data?.supply?.toLocaleString()})` :
-                    tx.fromAddress === null        ? `+${tx.amount} CBR (recompensa)` :
-                                                    `${tx.amount} CBR`;
-        rows.push(`<tr>
-          <td><span class="badge ${tipo}">${tipo.toUpperCase()}</span></td>
-          <td><span class="hash">${shortAddr(tx.fromAddress)}</span></td>
-          <td><span class="hash">${shortAddr(tx.toAddress)}</span></td>
-          <td>${valor}</td>
-          <td>${d.total - 1 - bi}</td>
-        </tr>`);
-      });
-    });
-    document.getElementById("ttxs").innerHTML = rows.join("") || `<tr><td colspan="5" class="empty">Nenhuma transação ainda</td></tr>`;
-  } catch(e) {}
+async function loadBlocos(){
+  const d=await fetch("/api/chain?limit=30").then(r=>r.json()).catch(()=>null);
+  if(!d) return;
+  document.getElementById("tbl-blocos").innerHTML=`<tr><th>#</th><th>Hash</th><th>Txs</th><th>Hora</th></tr>`+
+    d.blocos.map(b=>`<tr><td><b>#${b.index??""}</b></td><td><span class="hash">${(b.hash||"").slice(0,18)}…</span></td><td>${b.transactions?.length||0}</td><td style="color:var(--mut);font-size:10px">${b.timestamp?new Date(b.timestamp).toLocaleTimeString("pt-BR"):""}</td></tr>`).join("");
 }
 
-async function carregarTokens() {
-  try {
-    const r = await fetch(API + "/tokens");
-    const tokens = await r.json();
-    if (!tokens.length) {
-      document.getElementById("token-list").innerHTML = `<p class="empty">Nenhum token CBRC-20 criado ainda.<br>Use a Wallet para criar o primeiro token!</p>`;
-      return;
-    }
-    document.getElementById("token-list").innerHTML = tokens.map(t => `
-      <div class="token-card">
-        <div class="symbol">${t.symbol}</div>
-        <div class="name">${t.name}</div>
-        <div style="font-size:.85rem;margin-top:8px">
-          <span style="color:var(--dim)">Supply:</span> <strong>${Number(t.supply).toLocaleString("pt-BR")}</strong><br>
-          <span style="color:var(--dim)">Decimais:</span> ${t.decimals}<br>
-          <span style="color:var(--dim)">Contrato:</span> <span style="color:var(--accent);font-family:monospace;font-size:.75rem">${t.contract}</span>
-        </div>
-      </div>
-    `).join("");
-  } catch(e) {}
+async function loadTxs(){
+  const d=await fetch("/api/chain?limit=100").then(r=>r.json()).catch(()=>null);
+  if(!d) return;
+  const all=[];
+  for(const b of d.blocos) for(const tx of (b.transactions||[])) all.push({...tx,blockIndex:b.index});
+  document.getElementById("tbl-txs").innerHTML=`<tr><th>Hash</th><th>Tipo</th><th>De</th><th>Para</th><th>Valor</th><th>Bloco</th></tr>`+
+    (all.length?all.map(tx=>`<tr>
+      <td><span class="hash">${(tx.signature||"genesis").slice(0,12)}…</span></td>
+      <td><span class="badge ${TIPOS[tx.type]||"b-tx"}">${tx.type||"TRANSFER"}</span></td>
+      <td><span class="addr">${(tx.fromAddress||"PROTOCOL").slice(0,10)}…</span></td>
+      <td><span class="addr">${(tx.toAddress||"").slice(0,10)}…</span></td>
+      <td>${tx.amount>0?tx.amount+" CBR":(tx.data?.amount||tx.data?.symbol||"—")}</td>
+      <td>#${tx.blockIndex??""}</td>
+    </tr>`).join(""):`<tr><td colspan="6" class="empty">Sem transações</td></tr>`);
 }
 
-async function buscarEndereco(addr) {
-  ativarTab("endereco");
-  try {
-    const r = await fetch(API + "/address/" + addr);
-    const d = await r.json();
-    document.getElementById("addr-result").innerHTML = `
-      <div class="addr-result">
-        <div style="font-family:monospace;font-size:.85rem;color:var(--dim);margin-bottom:8px">${d.address}</div>
-        <div class="balance">${d.balance.toFixed(6)} CBR</div>
-        ${d.tokens?.length ? `<div style="margin-top:12px"><strong>Tokens:</strong><br>${d.tokens.map(t=>`${t.symbol}: ${t.balance}`).join("<br>")}</div>` : ""}
-        <div style="margin-top:16px;font-size:.9rem;color:var(--dim)">${d.transacoes?.length || 0} transações encontradas</div>
-      </div>
-      <table>
-        <thead><tr><th>Tipo</th><th>De</th><th>Para</th><th>Valor</th><th>Bloco</th></tr></thead>
-        <tbody>${(d.transacoes||[]).map(tx=>`<tr>
-          <td><span class="badge ${tx.type==="TOKEN_TRANSFER"?"token":tx.fromAddress===null?"reward":"transfer"}">${tx.type||"TRANSFER"}</span></td>
-          <td>${shortAddr(tx.fromAddress)}</td>
-          <td>${shortAddr(tx.toAddress)}</td>
-          <td>${tx.type==="TOKEN_TRANSFER"?`${tx.data?.amount} ${tx.data?.symbol}`:tx.amount+" CBR"}</td>
-          <td>${tx.blockIndex}</td>
-        </tr>`).join("")}</tbody>
-      </table>
-    `;
-  } catch(e) { document.getElementById("addr-result").innerHTML = `<p class="empty">Endereço não encontrado</p>`; }
+async function loadTokens(){
+  const d=await fetch("/api/tokens").then(r=>r.json()).catch(()=>[]);
+  const el=document.getElementById("tokens-list");
+  if(!d.length){el.innerHTML='<div class="empty"><span>🪙</span>Nenhum token ainda</div>';return;}
+  el.innerHTML=`<table><tr><th>Símbolo</th><th>Nome</th><th>Supply</th><th>Decimais</th><th>Criado</th></tr>`+
+    d.map(t=>`<tr><td><b style="color:var(--acc)">${t.symbol}</b></td><td>${t.name}</td><td>${(t.supply||0).toLocaleString("pt-BR")}</td><td>${t.decimals||18}</td><td style="color:var(--mut);font-size:10px">${t.deployedAt?new Date(t.deployedAt).toLocaleDateString("pt-BR"):"—"}</td></tr>`).join("")+`</table>`;
 }
 
-function buscarHash(hash) {
-  document.getElementById("searchInput").value = hash;
-  buscar();
+async function loadNFTs(){
+  const d=await fetch("/api/nfts").then(r=>r.json()).catch(()=>[]);
+  document.getElementById("nft-count").textContent=d.length+" NFTs";
+  const g=document.getElementById("nft-grid");
+  if(!d.length){g.innerHTML='<div class="empty" style="grid-column:1/-1"><span>🎨</span>Nenhum NFT ainda</div>';return;}
+  g.innerHTML=d.map(n=>`<div class="nft-card" onclick='showNFT(${JSON.stringify(n)})'>
+    <div class="nft-img">${n.imageUrl?`<img src="${n.imageUrl}" alt="${n.name}" onerror="this.parentNode.textContent='🖼️'">`:"🖼️"}</div>
+    <div class="nft-info"><div class="nft-name">${n.name}</div><div class="nft-col">${n.collection||"DEFAULT"} · #${(n.tokenId||"").slice(0,6)}</div></div>
+  </div>`).join("");
 }
 
-function buscar() {
-  const q = document.getElementById("searchInput").value.trim();
-  if (!q) return;
-  if (!isNaN(q)) {
-    ativarTab("blocos");
-  } else if (q.length > 60) {
-    buscarEndereco(q);
-  } else {
-    buscarEndereco(q);
-  }
+function showNFT(n){
+  document.getElementById("modal-nft-content").innerHTML=`
+    <div style="text-align:center;margin-bottom:14px">${n.imageUrl?`<img src="${n.imageUrl}" style="max-width:100%;border-radius:10px;max-height:260px">`:'<div style="font-size:64px">🖼️</div>'}</div>
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+      <div><b>Nome:</b> ${n.name}</div>
+      <div><b>Coleção:</b> ${n.collection||"DEFAULT"}</div>
+      <div><b>Descrição:</b> ${n.description||"—"}</div>
+      <div><b>Token ID:</b> <span class="hash">${n.tokenId}</span></div>
+      <div><b>Dono:</b> <span class="addr">${n.owner}</span></div>
+    </div>`;
+  document.getElementById("modal-nft").classList.add("open");
+}
+function closeModal(id){document.getElementById(id).classList.remove("open");}
+
+async function loadContratos(){
+  const d=await fetch("/api/contracts").then(r=>r.json()).catch(()=>[]);
+  const el=document.getElementById("contratos-list");
+  if(!d.length){el.innerHTML='<div class="empty"><span>📜</span>Nenhum contrato ainda</div>';return;}
+  el.innerHTML=d.map(c=>`<div class="card" style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span class="badge b-con">JS CONTRACT</span><b>${c.name}</b><span class="hash" style="margin-left:auto;font-size:10px">${c.contractAddress}</span></div>
+    <div class="code-block">${(c.sourceCode||"").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>
+    <div style="margin-top:6px;font-size:10px;color:var(--mut)">Deploy: ${c.deployedAt?new Date(c.deployedAt).toLocaleString("pt-BR"):"—"}</div>
+  </div>`).join("");
 }
 
-document.getElementById("searchInput").addEventListener("keydown", e => { if (e.key === "Enter") buscar(); });
-
-async function atualizar() {
-  await carregarStats();
-  if (activeTab === "blocos") await carregarBlocos();
-  if (activeTab === "txs") await carregarTxs();
+async function loadDex(){
+  const d=await fetch("/api/pools").then(r=>r.json()).catch(()=>[]);
+  const el=document.getElementById("pools-list");
+  if(!d.length){el.innerHTML='<div class="empty"><span>💱</span>Nenhum pool ainda</div>';return;}
+  el.innerHTML=`<div class="grid3">`+d.map(p=>{
+    const tot=(p.reserveA||0)+(p.reserveB||0);
+    const pct=tot>0?Math.round((p.reserveA||0)/tot*100):50;
+    return `<div class="card"><div style="font-size:15px;font-weight:800;margin-bottom:8px">${(p.poolKey||"").replace("_","/")} <span class="badge b-swap">AMM</span></div>
+      <div style="font-size:11px;color:var(--mut)">A: <b style="color:var(--txt)">${(p.reserveA||0).toLocaleString("pt-BR")}</b></div>
+      <div style="font-size:11px;color:var(--mut)">B: <b style="color:var(--txt)">${(p.reserveB||0).toLocaleString("pt-BR")}</b></div>
+      <div class="pool-bar"><div class="pool-fill" style="width:${pct}%"></div></div></div>`;
+  }).join("")+`</div>`;
 }
 
-atualizar();
-setInterval(atualizar, 5000);
+async function loadEndereco(addr){
+  if(!addr) return;
+  const d=await fetch(`/api/address/${addr}`).then(r=>r.json()).catch(()=>null);
+  const el=document.getElementById("addr-result");
+  if(!d||d.erro){el.innerHTML='<div class="card"><div class="empty"><span>❌</span>Endereço não encontrado</div></div>';return;}
+  el.innerHTML=`<div class="card">
+    <div class="card-head"><span class="card-title">📬 Endereço</span></div>
+    <div class="hash" style="word-break:break-all;margin-bottom:12px;font-size:11px">${addr}</div>
+    <div class="grid3" style="margin-bottom:12px">
+      <div style="text-align:center"><div style="font-size:22px;font-weight:900;color:var(--acc)">${(d.balance||0).toLocaleString("pt-BR")} CBR</div><div style="font-size:10px;color:var(--mut)">Saldo</div></div>
+      <div style="text-align:center"><div style="font-size:22px;font-weight:900;color:#e040fb">${(d.staked||0).toLocaleString("pt-BR")} CBR</div><div style="font-size:10px;color:var(--mut)">Staked</div></div>
+      <div style="text-align:center"><div style="font-size:22px;font-weight:900;color:var(--grn)">${(d.transacoes||[]).length}</div><div style="font-size:10px;color:var(--mut)">Transações</div></div>
+    </div>
+    ${d.tokens?.length?`<div style="margin-bottom:10px"><b style="font-size:11px">Tokens:</b> ${d.tokens.map(t=>`<span class="badge b-tok" style="margin:2px">${t.symbol}: ${(t.balance||0).toLocaleString("pt-BR")}</span>`).join("")}</div>`:""}
+    ${d.nfts?.length?`<div style="margin-bottom:10px"><b style="font-size:11px">NFTs (${d.nfts.length}):</b></div><div class="nft-grid">${d.nfts.map(n=>`<div class="nft-card"><div class="nft-img">${n.imageUrl?`<img src="${n.imageUrl}" onerror="this.parentNode.textContent='🖼️'">`:"🖼️"}</div><div class="nft-info"><div class="nft-name">${n.name}</div></div></div>`).join("")}</div>`:""}
+  </div>
+  <div class="card"><div class="card-title" style="margin-bottom:10px">Transações</div>
+    <table><tr><th>Tipo</th><th>De/Para</th><th>Valor</th><th>Bloco</th></tr>
+    ${(d.transacoes||[]).map(tx=>`<tr>
+      <td><span class="badge ${TIPOS[tx.type]||"b-tx"}">${tx.type||"TRANSFER"}</span></td>
+      <td><span class="addr">${tx.fromAddress===addr?"→ "+(tx.toAddress||"").slice(0,14):"← "+(tx.fromAddress||"PROTOCOL").slice(0,14)}…</span></td>
+      <td>${tx.amount>0?tx.amount+" CBR":(tx.data?.amount||tx.data?.symbol||"—")}</td>
+      <td>#${tx.blockIndex??""}</td>
+    </tr>`).join("")}</table>
+  </div>`;
+}
+
+function buscar(){
+  const v=document.getElementById("search").value.trim();
+  if(!v) return;
+  if(v.startsWith("04")&&v.length>40){showTab("endereco");loadEndereco(v);}
+  else if(!isNaN(v)){fetch(`/api/block/${v}`).then(r=>r.json()).then(b=>{if(!b.erro)alert(`Bloco #${b.index}\nHash: ${b.hash}\nTxs: ${b.transactions?.length||0}`)});}
+}
+
+const loaders={blocos:loadBlocos,txs:loadTxs,tokens:loadTokens,nfts:loadNFTs,contratos:loadContratos,dex:loadDex};
+function showTab(name){
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("panel-"+name)?.classList.add("active");
+  event?.currentTarget?.classList.add("active");
+  if(loaders[name]) loaders[name]();
+}
+
+connectWS();
+loadStats();
+loadBlocos();
+setInterval(loadStats,5000);
 </script>
 </body>
 </html>
