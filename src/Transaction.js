@@ -2,17 +2,21 @@ const crypto = require("crypto");
 const { ec } = require("./crypto");
 
 class Transaction {
-  constructor(fromAddress, toAddress, amount) {
+  constructor(fromAddress, toAddress, amount, type = "TRANSFER", data = null) {
     this.fromAddress = fromAddress;
     this.toAddress = toAddress;
     this.amount = amount;
     this.timestamp = Date.now();
+    this.type = type; // TRANSFER | TOKEN_DEPLOY | TOKEN_TRANSFER | MINING_REWARD
+    this.data = data; // payload para operações de token
   }
 
   calculateHash() {
-    return crypto.createHash("sha256")
-      .update(this.fromAddress + this.toAddress + this.amount + this.timestamp)
-      .digest("hex");
+    const base = this.fromAddress + this.toAddress + this.amount + this.timestamp;
+    const extra = (this.type && this.type !== "TRANSFER") || this.data
+      ? this.type + JSON.stringify(this.data)
+      : "";
+    return crypto.createHash("sha256").update(base + extra).digest("hex");
   }
 
   signTransaction(signingKey) {

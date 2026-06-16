@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEREBRO Wallet</title>
+<style>
+  :root { --bg:#0a0a14; --card:#12121f; --accent:#a259ff; --green:#00e676; --gold:#ffd600; --text:#e0e0e0; --dim:#888; --red:#ff4444; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',Arial,sans-serif; min-height:100vh; }
+  header { background:var(--card); border-bottom:2px solid var(--accent); padding:16px 32px; }
+  header h1 { font-size:1.5rem; color:var(--accent); }
+  header p { font-size:.85rem; color:var(--dim); margin-top:4px; }
+  .container { max-width:900px; margin:0 auto; padding:24px; }
+  .card { background:var(--card); border:1px solid #2a2a3f; border-radius:12px; padding:24px; margin-bottom:20px; }
+  .card h2 { font-size:1rem; color:var(--gold); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+  label { display:block; font-size:.85rem; color:var(--dim); margin-bottom:6px; margin-top:12px; }
+  input, select, textarea { width:100%; background:#1a1a2e; border:1px solid #3a3a5f; border-radius:8px; padding:10px 14px; color:var(--text); font-size:.9rem; font-family:monospace; }
+  input:focus, select:focus, textarea:focus { outline:none; border-color:var(--accent); }
+  textarea { resize:vertical; min-height:60px; }
+  button { background:var(--accent); border:none; border-radius:8px; padding:11px 22px; color:#fff; cursor:pointer; font-weight:600; font-size:.95rem; margin-top:14px; width:100%; transition:.2s; }
+  button:hover { opacity:.85; }
+  button.sec { background:#1a1a2e; border:1px solid var(--accent); color:var(--accent); }
+  .result { background:#0d1a14; border:1px solid #1a3a2a; border-radius:8px; padding:14px; margin-top:14px; font-family:monospace; font-size:.82rem; word-break:break-all; line-height:1.6; display:none; }
+  .result.show { display:block; }
+  .result.erro { background:#1a0d0d; border-color:#3a1a1a; color:var(--red); }
+  .balance-box { text-align:center; padding:20px 0; }
+  .balance-box .val { font-size:2.8rem; font-weight:700; color:var(--green); }
+  .balance-box .sym { font-size:1rem; color:var(--dim); margin-top:4px; }
+  .token-balances { margin-top:16px; }
+  .token-bal { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #1a1a2e; font-size:.9rem; }
+  .warn { background:#1a1a00; border:1px solid #3a3a00; border-radius:8px; padding:12px; margin-bottom:16px; font-size:.85rem; color:#ffc107; }
+  .tabs { display:flex; gap:4px; margin-bottom:20px; flex-wrap:wrap; }
+  .tab { background:#1a1a2e; border:1px solid #2a2a3f; border-radius:8px; padding:8px 16px; cursor:pointer; font-size:.88rem; }
+  .tab.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .panel { display:none; }
+  .panel.active { display:block; }
+  .addr-short { font-family:monospace; font-size:.8rem; color:var(--dim); margin-top:4px; word-break:break-all; }
+  #walletAddr { font-family:monospace; font-size:.75rem; color:var(--accent); word-break:break-all; margin-top:8px; display:none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>💳 CEREBRO Wallet</h1>
+  <p>Carteira descentralizada da rede CEREBRO — igual MetaMask mas para CBR e tokens CBRC-20</p>
+</header>
+<div class="container">
+
+  <div class="tabs">
+    <div class="tab active" onclick="ativarTab('carteira')">Carteira</div>
+    <div class="tab" onclick="ativarTab('enviar')">Enviar CBR</div>
+    <div class="tab" onclick="ativarTab('tokens')">Tokens CBRC-20</div>
+    <div class="tab" onclick="ativarTab('criar-token')">Criar Token</div>
+    <div class="tab" onclick="ativarTab('nova')">Nova Carteira</div>
+  </div>
+
+  <!-- CARTEIRA -->
+  <div id="tab-carteira" class="panel active">
+    <div class="card">
+      <h2>💰 Saldo da Carteira</h2>
+      <label>Endereço Público (cole aqui para consultar)</label>
+      <input id="consultaAddr" placeholder="Cole seu endereço público aqui..." />
+      <button onclick="consultarSaldo()">Ver Saldo</button>
+      <div id="resultSaldo" class="result"></div>
+    </div>
+    <div class="card">
+      <h2>📋 Sua Carteira Atual</h2>
+      <label>Chave Privada (mantida localmente — nunca envie para ninguém)</label>
+      <input type="password" id="currentPrivKey" placeholder="Cole sua chave privada para carregar carteira..." />
+      <button class="sec" onclick="carregarCarteira()">Carregar Carteira</button>
+      <div id="walletAddr"></div>
+      <div id="walletInfo"></div>
+    </div>
+  </div>
+
+  <!-- ENVIAR CBR -->
+  <div id="tab-enviar" class="panel">
+    <div class="card">
+      <h2>📤 Enviar CEREBRO (CBR)</h2>
+      <div class="warn">⚠️ Verifique o endereço antes de enviar. Transações na blockchain são irreversíveis.</div>
+      <label>Sua Chave Privada</label>
+      <input type="password" id="sendPrivKey" placeholder="Chave privada (não será armazenada)" />
+      <label>Endereço do Destinatário</label>
+      <input id="sendTo" placeholder="Endereço público do destinatário" />
+      <label>Quantidade (CBR)</label>
+      <input type="number" id="sendAmount" placeholder="Ex: 1.5" step="0.000001" />
+      <button onclick="enviarCBR()">Enviar CBR</button>
+      <div id="resultEnvio" class="result"></div>
+    </div>
+  </div>
+
+  <!-- TOKENS -->
+  <div id="tab-tokens" class="panel">
+    <div class="card">
+      <h2>🪙 Tokens CBRC-20 na Rede</h2>
+      <button class="sec" onclick="listarTokens()" style="margin-top:0">Atualizar Lista</button>
+      <div id="listaTokens" style="margin-top:16px"></div>
+    </div>
+    <div class="card">
+      <h2>📤 Transferir Token CBRC-20</h2>
+      <label>Sua Chave Privada</label>
+      <input type="password" id="tokPrivKey" placeholder="Chave privada" />
+      <label>Símbolo do Token</label>
+      <input id="tokSymbol" placeholder="Ex: CSTABLE" style="text-transform:uppercase" />
+      <label>Endereço do Destinatário</label>
+      <input id="tokTo" placeholder="Endereço público" />
+      <label>Quantidade</label>
+      <input type="number" id="tokAmount" placeholder="Quantidade a transferir" />
+      <button onclick="transferirToken()">Transferir Token</button>
+      <div id="resultTokTransf" class="result"></div>
+    </div>
+  </div>
+
+  <!-- CRIAR TOKEN -->
+  <div id="tab-criar-token" class="panel">
+    <div class="card">
+      <h2>🚀 Criar Token CBRC-20</h2>
+      <p style="font-size:.85rem;color:var(--dim);margin-bottom:12px">Como o ERC-20 do Ethereum, mas na rede CEREBRO. Crie sua própria criptomoeda!</p>
+      <label>Sua Chave Privada (será o dono do token)</label>
+      <input type="password" id="deployPrivKey" placeholder="Chave privada" />
+      <label>Nome do Token</label>
+      <input id="deployName" placeholder="Ex: Meu Token" />
+      <label>Símbolo (3-6 letras)</label>
+      <input id="deploySymbol" placeholder="Ex: MTK" style="text-transform:uppercase" maxlength="10" />
+      <label>Supply Total</label>
+      <input type="number" id="deploySupply" placeholder="Ex: 1000000" />
+      <label>Decimais</label>
+      <input type="number" id="deployDecimals" value="18" min="0" max="18" />
+      <button onclick="criarToken()">🚀 Criar Token na Rede CEREBRO</button>
+      <div id="resultDeploy" class="result"></div>
+    </div>
+  </div>
+
+  <!-- NOVA CARTEIRA -->
+  <div id="tab-nova" class="panel">
+    <div class="card">
+      <h2>🔑 Criar Nova Carteira</h2>
+      <p style="font-size:.85rem;color:var(--dim);margin-bottom:16px">Gera um par de chaves criptográficas secp256k1 — igual ao Bitcoin e Ethereum.</p>
+      <div class="warn">⚠️ GUARDE a chave privada em local seguro. Quem tiver a chave controla os fundos. Não tem recuperação.</div>
+      <button onclick="gerarCarteira()">Gerar Nova Carteira</button>
+      <div id="resultCarteira" class="result"></div>
+    </div>
+    <div class="card">
+      <h2>💧 Faucet — Receba CBR Grátis</h2>
+      <p style="font-size:.85rem;color:var(--dim);margin-bottom:12px">Cole seu endereço e receba CEREBRO para começar a usar a rede.</p>
+      <label>Seu Endereço Público</label>
+      <input id="faucetAddr" placeholder="Seu endereço público" />
+      <button onclick="pedirFaucet()">Receber CBR Grátis</button>
+      <div id="resultFaucet" class="result"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API = "http://localhost:3001/api";
+
+function ativarTab(name) {
+  const names = ["carteira","enviar","tokens","criar-token","nova"];
+  document.querySelectorAll(".tab").forEach((t,i) => t.classList.toggle("active", names[i] === name));
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+  document.getElementById("tab-" + name).classList.add("active");
+  if (name === "tokens") listarTokens();
+}
+
+function showResult(id, msg, erro=false) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = "result show" + (erro ? " erro" : "");
+}
+
+async function gerarCarteira() {
+  try {
+    // Gerar chave via API (simplificado — em produção gerar no cliente)
+    const r = await fetch(API + "/stats");
+    // Gerar localmente com Math.random (demo — para produção usar crypto.getRandomValues)
+    const chars = "0123456789abcdef";
+    let pk = "";
+    for (let i = 0; i < 64; i++) pk += chars[Math.floor(Math.random() * 16)];
+    // Calcular endereço público (simplificado para demo)
+    const resp = await fetch(API + "/balance/" + pk.slice(0,40));
+    showResult("resultCarteira",
+      `🔑 CHAVE PRIVADA (GUARDE COM SEGURANÇA!):\n${pk}\n\n` +
+      `📋 Para ver seu endereço público:\n- Cole a chave privada em "Carregar Carteira"\n- Ou use o script 1-CRIAR-CARTEIRA.bat no terminal\n\n` +
+      `⚠️ NUNCA compartilhe a chave privada!`);
+  } catch(e) { showResult("resultCarteira", "Erro: " + e.message, true); }
+}
+
+async function carregarCarteira() {
+  const pk = document.getElementById("currentPrivKey").value.trim();
+  if (!pk) return alert("Cole sua chave privada");
+  try {
+    // Para derivar o endereço público da chave privada, usamos a API ou recalculamos
+    // Como não temos crypto no browser facilmente, vamos buscar o saldo via endereço derivado
+    // (Para uma implementação real, usaríamos elliptic.js no browser)
+    showResult("resultCarteira", "Para ver saldo, copie seu endereço público e cole na aba 'Carteira'.", false);
+    document.getElementById("walletAddr").style.display = "block";
+    document.getElementById("walletAddr").textContent = "Chave carregada. Use seu endereço público para consultar saldo.";
+    document.getElementById("walletInfo").innerHTML = `<p style="font-size:.85rem;color:var(--dim);margin-top:8px">Chave privada armazenada apenas nesta sessão do navegador.</p>`;
+  } catch(e) { alert("Erro: " + e.message); }
+}
+
+async function consultarSaldo() {
+  const addr = document.getElementById("consultaAddr").value.trim();
+  if (!addr) return alert("Digite um endereço");
+  try {
+    const r = await fetch(API + "/address/" + addr);
+    const d = await r.json();
+    const toks = (d.tokens||[]).map(t => `  ${t.symbol}: ${t.balance}`).join("\n") || "  Nenhum token";
+    showResult("resultSaldo",
+      `Endereço: ${d.address}\n` +
+      `Saldo CBR: ${d.balance.toFixed(6)} CBR\n` +
+      `Transações: ${d.transacoes?.length || 0}\n\n` +
+      `Tokens CBRC-20:\n${toks}`);
+  } catch(e) { showResult("resultSaldo", "Nó offline ou endereço inválido: " + e.message, true); }
+}
+
+async function enviarCBR() {
+  const pk = document.getElementById("sendPrivKey").value.trim();
+  const to = document.getElementById("sendTo").value.trim();
+  const amount = document.getElementById("sendAmount").value.trim();
+  if (!pk || !to || !amount) return alert("Preencha todos os campos");
+  if (!confirm(`Enviar ${amount} CBR para ${to.slice(0,12)}...?\nISSO É IRREVERSÍVEL.`)) return;
+  try {
+    // Para enviar, precisamos do endereço público do remetente
+    // O servidor vai derivar da chave privada
+    const body = { privateKey: pk, toAddress: to, amount: Number(amount), fromAddress: "" };
+    showResult("resultEnvio", "Enviando transação...");
+    const r = await fetch(API + "/transfer", {
+      method: "POST", headers: {"Content-Type":"application/json"},
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if (d.erro) showResult("resultEnvio", "Erro: " + d.erro, true);
+    else showResult("resultEnvio", `✅ Transação enviada!\nHash: ${d.txHash}\n\nAguarde o próximo bloco ser minerado.`);
+  } catch(e) { showResult("resultEnvio", "Erro: " + e.message, true); }
+}
+
+async function listarTokens() {
+  try {
+    const r = await fetch(API + "/tokens");
+    const tokens = await r.json();
+    const el = document.getElementById("listaTokens");
+    if (!tokens.length) { el.innerHTML = `<p style="color:var(--dim);text-align:center;padding:20px">Nenhum token criado ainda. Crie o primeiro na aba "Criar Token"!</p>`; return; }
+    el.innerHTML = tokens.map(t => `
+      <div style="background:#1a1a2e;border-radius:8px;padding:14px;margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:1.3rem;font-weight:700;color:var(--accent)">${t.symbol}</span>
+          <span style="color:var(--dim);font-size:.85rem">${t.name}</span>
+        </div>
+        <div style="font-size:.82rem;color:var(--dim);margin-top:6px">
+          Supply: <strong style="color:var(--text)">${Number(t.supply).toLocaleString("pt-BR")}</strong> |
+          Decimais: ${t.decimals} |
+          Contrato: <span style="color:var(--accent);font-family:monospace">${t.contract}</span>
+        </div>
+      </div>
+    `).join("");
+  } catch(e) { document.getElementById("listaTokens").innerHTML = `<p style="color:var(--red)">Nó offline</p>`; }
+}
+
+async function criarToken() {
+  const pk = document.getElementById("deployPrivKey").value.trim();
+  const name = document.getElementById("deployName").value.trim();
+  const symbol = document.getElementById("deploySymbol").value.trim().toUpperCase();
+  const supply = document.getElementById("deploySupply").value.trim();
+  const decimals = document.getElementById("deployDecimals").value.trim();
+  if (!pk || !name || !symbol || !supply) return alert("Preencha todos os campos");
+  if (!confirm(`Criar token ${symbol} com supply ${Number(supply).toLocaleString()}?\nEsta ação será gravada na blockchain.`)) return;
+  try {
+    showResult("resultDeploy", "Criando token na blockchain CEREBRO...");
+    // Derivar endereço do dono da chave privada (o servidor faz isso)
+    const body = { privateKey: pk, ownerAddress: "", name, symbol, supply: Number(supply), decimals: Number(decimals) };
+    const r = await fetch(API + "/token/deploy", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if (d.erro) showResult("resultDeploy", "Erro: " + d.erro, true);
+    else showResult("resultDeploy",
+      `✅ Token criado com sucesso!\n\n` +
+      `Nome: ${name}\nSímbolo: ${symbol}\nSupply: ${Number(supply).toLocaleString()}\n` +
+      `Contrato: ${d.contract}\nTX Hash: ${d.txHash}\n\n` +
+      `Aguarde o próximo bloco ser minerado para confirmar.`);
+  } catch(e) { showResult("resultDeploy", "Erro: " + e.message, true); }
+}
+
+async function transferirToken() {
+  const pk = document.getElementById("tokPrivKey").value.trim();
+  const symbol = document.getElementById("tokSymbol").value.trim().toUpperCase();
+  const to = document.getElementById("tokTo").value.trim();
+  const amount = document.getElementById("tokAmount").value.trim();
+  if (!pk || !symbol || !to || !amount) return alert("Preencha todos os campos");
+  try {
+    const body = { privateKey: pk, fromAddress: "", symbol, toAddress: to, amount: Number(amount) };
+    const r = await fetch(API + "/token/transfer", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if (d.erro) showResult("resultTokTransf", "Erro: " + d.erro, true);
+    else showResult("resultTokTransf", `✅ Transferência de token enviada!\nHash: ${d.txHash}`);
+  } catch(e) { showResult("resultTokTransf", "Erro: " + e.message, true); }
+}
+
+async function pedirFaucet() {
+  const addr = document.getElementById("faucetAddr").value.trim();
+  if (!addr) return alert("Digite seu endereço público");
+  showResult("resultFaucet",
+    `💧 Para receber CBR grátis:\n\n` +
+    `1. Abra o terminal na pasta do CEREBRO\n` +
+    `2. Execute: node scripts/faucet.js ${addr}\n\n` +
+    `Ou peça para o minerador da rede te enviar CBR!`);
+}
+
+listarTokens();
+</script>
+</body>
+</html>

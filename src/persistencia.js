@@ -13,7 +13,7 @@ function salvar(blockchain) {
 }
 
 function reconstruirTx(t) {
-  const tx = new Transaction(t.fromAddress, t.toAddress, t.amount);
+  const tx = new Transaction(t.fromAddress, t.toAddress, t.amount, t.type || "TRANSFER", t.data || null);
   tx.timestamp = t.timestamp;
   tx.signature = t.signature;
   return tx;

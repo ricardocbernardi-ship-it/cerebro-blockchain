@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "CEREBRO — blockchain educacional estilo Bitcoin (PoW, halving, P2P) — local, sem valor real",
   "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
     "elliptic": "^6.5.5",
+    "express": "^5.2.1",
     "ws": "^8.16.0"
   }
 }

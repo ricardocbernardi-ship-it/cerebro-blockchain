@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEREBRO Explorer</title>
+<style>
+  :root { --bg:#0a0a14; --card:#12121f; --accent:#a259ff; --green:#00e676; --gold:#ffd600; --text:#e0e0e0; --dim:#888; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',Arial,sans-serif; min-height:100vh; }
+  header { background:var(--card); border-bottom:2px solid var(--accent); padding:16px 32px; display:flex; align-items:center; gap:16px; }
+  header h1 { font-size:1.6rem; color:var(--accent); letter-spacing:2px; }
+  header span { font-size:.85rem; color:var(--dim); }
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; padding:24px 32px; }
+  .stat { background:var(--card); border:1px solid #2a2a3f; border-radius:10px; padding:18px; text-align:center; }
+  .stat .val { font-size:2rem; font-weight:700; color:var(--accent); }
+  .stat .lbl { font-size:.8rem; color:var(--dim); margin-top:4px; }
+  .section { padding:0 32px 32px; }
+  h2 { font-size:1.1rem; color:var(--gold); margin-bottom:12px; border-bottom:1px solid #2a2a3f; padding-bottom:8px; }
+  .search { display:flex; gap:8px; margin-bottom:20px; }
+  .search input { flex:1; background:#1a1a2e; border:1px solid #3a3a5f; border-radius:8px; padding:10px 14px; color:var(--text); font-size:.95rem; }
+  .search input:focus { outline:none; border-color:var(--accent); }
+  .search button { background:var(--accent); border:none; border-radius:8px; padding:10px 20px; color:#fff; cursor:pointer; font-weight:600; }
+  table { width:100%; border-collapse:collapse; font-size:.88rem; }
+  th { background:#1a1a2e; padding:10px 12px; text-align:left; color:var(--dim); font-weight:600; }
+  td { padding:10px 12px; border-bottom:1px solid #1a1a2e; }
+  tr:hover td { background:#16162a; }
+  .hash { font-family:monospace; font-size:.8rem; color:var(--accent); cursor:pointer; }
+  .hash:hover { text-decoration:underline; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:12px; font-size:.75rem; font-weight:600; }
+  .badge.transfer { background:#1a3a2a; color:var(--green); }
+  .badge.token { background:#2a1a3a; color:#cf88ff; }
+  .badge.deploy { background:#3a2a00; color:var(--gold); }
+  .badge.reward { background:#2a2a00; color:#ffc107; }
+  .tabs { display:flex; gap:4px; margin-bottom:20px; flex-wrap:wrap; }
+  .tab { background:#1a1a2e; border:1px solid #2a2a3f; border-radius:8px; padding:8px 18px; cursor:pointer; font-size:.9rem; }
+  .tab.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .panel { display:none; }
+  .panel.active { display:block; }
+  .addr-result { background:var(--card); border:1px solid #2a2a3f; border-radius:10px; padding:20px; margin-bottom:16px; }
+  .addr-result .balance { font-size:1.8rem; font-weight:700; color:var(--green); }
+  .token-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-bottom:20px; }
+  .token-card { background:var(--card); border:1px solid #3a2a5f; border-radius:10px; padding:16px; }
+  .token-card .symbol { font-size:1.4rem; font-weight:700; color:var(--accent); }
+  .token-card .name { color:var(--dim); font-size:.85rem; margin:4px 0 8px; }
+  #statusDot { width:8px; height:8px; border-radius:50%; background:var(--green); display:inline-block; margin-right:6px; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .empty { color:var(--dim); text-align:center; padding:40px; font-size:.95rem; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>⚡ CEREBRO Explorer</h1>
+    <span id="statusDot"></span><span id="status">Conectando...</span>
+  </div>
+</header>
+
+<div class="stats" id="stats"></div>
+
+<div class="section">
+  <div class="search">
+    <input id="searchInput" placeholder="Buscar endereço, hash de bloco ou índice..." />
+    <button onclick="buscar()">Buscar</button>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="ativarTab('blocos')">Blocos</div>
+    <div class="tab" onclick="ativarTab('txs')">Transações</div>
+    <div class="tab" onclick="ativarTab('tokens')">Tokens CBRC-20</div>
+    <div class="tab" onclick="ativarTab('endereco')">Endereço</div>
+  </div>
+
+  <div id="tab-blocos" class="panel active">
+    <h2>Blocos Recentes</h2>
+    <table>
+      <thead><tr><th>#</th><th>Hash</th><th>TXs</th><th>Timestamp</th><th>Nonce</th></tr></thead>
+      <tbody id="tblocos"></tbody>
+    </table>
+  </div>
+
+  <div id="tab-txs" class="panel">
+    <h2>Todas as Transações</h2>
+    <table>
+      <thead><tr><th>Tipo</th><th>De</th><th>Para</th><th>Valor/Token</th><th>Bloco</th></tr></thead>
+      <tbody id="ttxs"></tbody>
+    </table>
+  </div>
+
+  <div id="tab-tokens" class="panel">
+    <h2>Tokens CBRC-20 na Rede</h2>
+    <div id="token-list" class="token-list"></div>
+  </div>
+
+  <div id="tab-endereco" class="panel">
+    <h2>Consultar Endereço</h2>
+    <div id="addr-result"></div>
+  </div>
+</div>
+
+<script>
+const API = "http://localhost:3001/api";
+let activeTab = "blocos";
+
+function ativarTab(name) {
+  activeTab = name;
+  document.querySelectorAll(".tab").forEach((t,i) => {
+    const names = ["blocos","txs","tokens","endereco"];
+    t.classList.toggle("active", names[i] === name);
+  });
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+  document.getElementById("tab-" + name).classList.add("active");
+  if (name === "tokens") carregarTokens();
+}
+
+function shortHash(h) { return h ? h.slice(0,8)+"..."+h.slice(-6) : "—"; }
+function shortAddr(a) { return a ? a.slice(0,8)+"..."+a.slice(-6) : "Sistema"; }
+function tsToDate(ts) { return ts ? new Date(ts).toLocaleString("pt-BR") : "—"; }
+
+async function carregarStats() {
+  try {
+    const r = await fetch(API + "/stats");
+    const d = await r.json();
+    document.getElementById("status").textContent = "Online — " + d.versao;
+    document.getElementById("stats").innerHTML = `
+      <div class="stat"><div class="val">${d.blocos}</div><div class="lbl">Blocos Minerados</div></div>
+      <div class="stat"><div class="val">${d.recompensaAtual.toFixed(4)}</div><div class="lbl">Recompensa Atual (CBR)</div></div>
+      <div class="stat"><div class="val">${d.supplyTotal.toFixed(2)}</div><div class="lbl">Supply em Circulação</div></div>
+      <div class="stat"><div class="val">${d.supplyMaximo.toLocaleString("pt-BR")}</div><div class="lbl">Supply Máximo</div></div>
+      <div class="stat"><div class="val">${d.tokens}</div><div class="lbl">Tokens CBRC-20</div></div>
+      <div class="stat"><div class="val">${d.pendentesTx}</div><div class="lbl">TXs Pendentes</div></div>
+    `;
+  } catch(e) {
+    document.getElementById("status").textContent = "Offline — verifique o nó";
+    document.getElementById("statusDot").style.background = "#f44";
+  }
+}
+
+async function carregarBlocos() {
+  try {
+    const r = await fetch(API + "/chain?limit=30");
+    const d = await r.json();
+    document.getElementById("tblocos").innerHTML = d.blocos.map(b => `
+      <tr>
+        <td>${d.total - 1 - d.blocos.indexOf(b)}</td>
+        <td><span class="hash" onclick="buscarHash('${b.hash}')">${shortHash(b.hash)}</span></td>
+        <td>${b.transactions?.length || 0}</td>
+        <td>${tsToDate(b.timestamp)}</td>
+        <td>${b.nonce?.toLocaleString("pt-BR") || 0}</td>
+      </tr>
+    `).join("");
+  } catch(e) {}
+}
+
+async function carregarTxs() {
+  try {
+    const r = await fetch(API + "/chain?limit=100");
+    const d = await r.json();
+    const rows = [];
+    d.blocos.forEach((b, bi) => {
+      (b.transactions || []).forEach(tx => {
+        let tipo = tx.fromAddress === null ? "reward" : (tx.type === "TOKEN_TRANSFER" ? "token" : tx.type === "TOKEN_DEPLOY" ? "deploy" : "transfer");
+        let valor = tx.type === "TOKEN_TRANSFER" ? `${tx.data?.amount} ${tx.data?.symbol}` :
+                    tx.type === "TOKEN_DEPLOY"   ? `Deploy ${tx.data?.symbol} (${tx.data?.supply?.toLocaleString()})` :
+                    tx.fromAddress === null        ? `+${tx.amount} CBR (recompensa)` :
+                                                    `${tx.amount} CBR`;
+        rows.push(`<tr>
+          <td><span class="badge ${tipo}">${tipo.toUpperCase()}</span></td>
+          <td><span class="hash">${shortAddr(tx.fromAddress)}</span></td>
+          <td><span class="hash">${shortAddr(tx.toAddress)}</span></td>
+          <td>${valor}</td>
+          <td>${d.total - 1 - bi}</td>
+        </tr>`);
+      });
+    });
+    document.getElementById("ttxs").innerHTML = rows.join("") || `<tr><td colspan="5" class="empty">Nenhuma transação ainda</td></tr>`;
+  } catch(e) {}
+}
+
+async function carregarTokens() {
+  try {
+    const r = await fetch(API + "/tokens");
+    const tokens = await r.json();
+    if (!tokens.length) {
+      document.getElementById("token-list").innerHTML = `<p class="empty">Nenhum token CBRC-20 criado ainda.<br>Use a Wallet para criar o primeiro token!</p>`;
+      return;
+    }
+    document.getElementById("token-list").innerHTML = tokens.map(t => `
+      <div class="token-card">
+        <div class="symbol">${t.symbol}</div>
+        <div class="name">${t.name}</div>
+        <div style="font-size:.85rem;margin-top:8px">
+          <span style="color:var(--dim)">Supply:</span> <strong>${Number(t.supply).toLocaleString("pt-BR")}</strong><br>
+          <span style="color:var(--dim)">Decimais:</span> ${t.decimals}<br>
+          <span style="color:var(--dim)">Contrato:</span> <span style="color:var(--accent);font-family:monospace;font-size:.75rem">${t.contract}</span>
+        </div>
+      </div>
+    `).join("");
+  } catch(e) {}
+}
+
+async function buscarEndereco(addr) {
+  ativarTab("endereco");
+  try {
+    const r = await fetch(API + "/address/" + addr);
+    const d = await r.json();
+    document.getElementById("addr-result").innerHTML = `
+      <div class="addr-result">
+        <div style="font-family:monospace;font-size:.85rem;color:var(--dim);margin-bottom:8px">${d.address}</div>
+        <div class="balance">${d.balance.toFixed(6)} CBR</div>
+        ${d.tokens?.length ? `<div style="margin-top:12px"><strong>Tokens:</strong><br>${d.tokens.map(t=>`${t.symbol}: ${t.balance}`).join("<br>")}</div>` : ""}
+        <div style="margin-top:16px;font-size:.9rem;color:var(--dim)">${d.transacoes?.length || 0} transações encontradas</div>
+      </div>
+      <table>
+        <thead><tr><th>Tipo</th><th>De</th><th>Para</th><th>Valor</th><th>Bloco</th></tr></thead>
+        <tbody>${(d.transacoes||[]).map(tx=>`<tr>
+          <td><span class="badge ${tx.type==="TOKEN_TRANSFER"?"token":tx.fromAddress===null?"reward":"transfer"}">${tx.type||"TRANSFER"}</span></td>
+          <td>${shortAddr(tx.fromAddress)}</td>
+          <td>${shortAddr(tx.toAddress)}</td>
+          <td>${tx.type==="TOKEN_TRANSFER"?`${tx.data?.amount} ${tx.data?.symbol}`:tx.amount+" CBR"}</td>
+          <td>${tx.blockIndex}</td>
+        </tr>`).join("")}</tbody>
+      </table>
+    `;
+  } catch(e) { document.getElementById("addr-result").innerHTML = `<p class="empty">Endereço não encontrado</p>`; }
+}
+
+function buscarHash(hash) {
+  document.getElementById("searchInput").value = hash;
+  buscar();
+}
+
+function buscar() {
+  const q = document.getElementById("searchInput").value.trim();
+  if (!q) return;
+  if (!isNaN(q)) {
+    ativarTab("blocos");
+  } else if (q.length > 60) {
+    buscarEndereco(q);
+  } else {
+    buscarEndereco(q);
+  }
+}
+
+document.getElementById("searchInput").addEventListener("keydown", e => { if (e.key === "Enter") buscar(); });
+
+async function atualizar() {
+  await carregarStats();
+  if (activeTab === "blocos") await carregarBlocos();
+  if (activeTab === "txs") await carregarTxs();
+}
+
+atualizar();
+setInterval(atualizar, 5000);
+</script>
+</body>
+</html>
