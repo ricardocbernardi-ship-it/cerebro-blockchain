@@ -1,0 +1,12 @@
+{
+  "contrato": "WrappedCBR",
+  "simbolo": "wCBR",
+  "rede": "Polygon Mainnet",
+  "chainId": 137,
+  "endereco": "0x208B65B781245AB72419FD6b159c65818ca69C08",
+  "txHash": "0xb110633f576b7ac12ca93ae501fc754dba1bcd59638ef36ed469724e6dcabf23",
+  "supply": "21000000",
+  "decimals": 18,
+  "deployer": "0x47cB0B49a833DE86c74b646536c8ee6a4555B38b",
+  "timestamp": "2026-06-17T01:16:27.632Z"
+}

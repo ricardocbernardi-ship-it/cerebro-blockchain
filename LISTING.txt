@@ -1,0 +1,129 @@
+====================================================
+  CEREBRO BLOCKCHAIN — DADOS PARA CADASTRO
+  Usar em: CoinSniper, CoinHunt, CoinMooner,
+          CoinGecko, CoinMarketCap, DexTools
+====================================================
+
+NOME DO PROJETO:
+  CEREBRO Blockchain
+
+SÍMBOLO DO TOKEN:
+  CBR (nativo) / wCBR (Polygon)
+
+TOKEN POLYGON (ERC-20 / wCBR):
+  Endereço: 0x208B65B781245AB72419FD6b159c65818ca69C08
+  Rede: Polygon Mainnet (Chain ID: 137)
+  Decimals: 18
+  Supply: 21,000,000
+  Polygonscan: https://polygonscan.com/token/0x208B65B781245AB72419FD6b159c65818ca69C08
+  TX Deploy: 0xb110633f576b7ac12ca93ae501fc754dba1bcd59638ef36ed469724e6dcabf23
+
+DESCRIÇÃO CURTA (até 160 chars):
+  Blockchain com Smart Contracts em JavaScript, NFTs nativos, DEX AMM e Staking. Supply limitado a 21M CBR como o Bitcoin. Token wCBR na Polygon.
+
+DESCRIÇÃO LONGA:
+  CEREBRO é uma blockchain proof-of-work de nova geração construída do zero
+  em Node.js. É a primeira blockchain do mundo com Smart Contracts em
+  JavaScript puro — sem aprender Solidity ou Rust.
+
+  Funcionalidades nativas:
+  • Smart Contracts em JavaScript (VM sandbox seguro)
+  • Tokens CBRC-20 (equivalente ao ERC-20)
+  • NFTs CBRC-721 com marketplace nativo
+  • DEX AMM nativo (x*y=k, 0.3% taxa)
+  • Staking nativo com recompensas
+  • 30+ endpoints REST + WebSocket tempo real
+  • SDK JavaScript (cerebro.js)
+
+  Token wCBR na Polygon:
+  • Endereço: 0x208B65B781245AB72419FD6b159c65818ca69C08
+  • Supply: 21,000,000 wCBR (igual ao Bitcoin)
+  • Já listado na Polygon Mainnet
+
+  Economia:
+  • Supply máximo: 21.000.000 CBR/wCBR
+  • Consenso: Proof of Work SHA-256
+  • Criptografia: secp256k1 (Bitcoin/Ethereum)
+  • Halving: a cada 210.000 blocos
+
+CATEGORIA:
+  Layer 1 Blockchain / DeFi / Smart Contracts
+
+REDE:
+  CEREBRO Mainnet (nativa) + Polygon Mainnet (wCBR)
+
+SITE OFICIAL:
+  https://ricardocbernardi-ship-it.github.io/cerebro-blockchain/
+
+GITHUB:
+  https://github.com/ricardocbernardi-ship-it/cerebro-blockchain
+
+WHITEPAPER:
+  https://ricardocbernardi-ship-it.github.io/cerebro-blockchain/whitepaper.html
+
+EXPLORER:
+  https://cerebro-blockchain.onrender.com/explorer.html
+
+POLYGONSCAN:
+  https://polygonscan.com/token/0x208B65B781245AB72419FD6b159c65818ca69C08
+
+CONTATO:
+  ricardocardosobernardi@gmail.com
+
+TAGS / KEYWORDS:
+  blockchain, javascript, smart-contracts, nft, defi, dex, staking,
+  pow, bitcoin-style, cbr, wcbr, polygon
+
+SUPPLY:
+  Total máximo: 21,000,000
+  Decimals: 18
+
+LICENÇA:
+  MIT (código aberto)
+
+====================================================
+  SITES PARA CADASTRAR — COM ENDEREÇO DO CONTRATO
+====================================================
+
+1. CoinGecko (GRÁTIS):
+   https://www.coingecko.com/en/coins/new
+   → Usar endereço: 0x208B65B781245AB72419FD6b159c65818ca69C08
+   → Rede: Polygon
+
+2. CoinMarketCap (GRÁTIS):
+   https://coinmarketcap.com/request/
+   → Usar endereço do contrato Polygon
+
+3. CoinSniper:
+   https://coinsniper.net/add-listing
+   → Endereço do contrato: 0x208B65B781245AB72419FD6b159c65818ca69C08
+
+4. CoinHunt:
+   https://coinhunt.cc/submit
+   → Preencher com dados acima
+
+5. DexTools (automático após pool no QuickSwap):
+   https://www.dextools.io/app/polygon/pair-explorer/[endereco-do-pool]
+
+6. GeckoTerminal (automático após pool):
+   https://www.geckoterminal.com
+
+====================================================
+  PRÓXIMO PASSO CRÍTICO: CRIAR POOL NO QUICKSWAP
+====================================================
+
+  URL: https://quickswap.exchange/#/add
+  Token A: 0x208B65B781245AB72419FD6b159c65818ca69C08 (wCBR)
+  Token B: POL (nativo da Polygon)
+
+  Sugestão de liquidez inicial:
+  → Adicionar 50 POL + 5.000.000 wCBR
+  → Isso define: 1 wCBR = 0.00001 POL
+  → Com POL a $0.50: 1 wCBR = $0.000005
+
+  Após criar o pool:
+  → wCBR aparece automaticamente no DexTools
+  → wCBR aparece no GeckoTerminal
+  → Qualquer pessoa pode comprar wCBR
+
+====================================================
