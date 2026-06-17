@@ -21,6 +21,8 @@ class Block {
     const inicio = Date.now();
     while (this.hash.substring(0, difficulty) !== alvo) {
       this.nonce++;
+      if (this.nonce > Number.MAX_SAFE_INTEGER)
+        throw new Error("Nonce overflow: dificuldade muito alta, impossível minerar este bloco");
       this.hash = this.calculateHash();
     }
     const tempo = ((Date.now() - inicio) / 1000).toFixed(2);

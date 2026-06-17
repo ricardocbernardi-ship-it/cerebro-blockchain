@@ -100,11 +100,14 @@ class Blockchain {
       // sem validação de amount — essas operações têm amount=0
     } else {
       // TRANSFER padrão
-      if (transaction.amount <= 0) throw new Error("Valor deve ser > 0");
+      if (!Number.isFinite(transaction.amount) || transaction.amount <= 0)
+        throw new Error("Valor deve ser um número finito > 0");
       if (this.getBalanceOfAddress(transaction.fromAddress) < transaction.amount)
         throw new Error(`Saldo insuficiente: ${this.getBalanceOfAddress(transaction.fromAddress)} CBR`);
     }
 
+    if (this.pendingTransactions.length >= 10000)
+      throw new Error("Mempool cheia: aguarde transações serem mineradas");
     this.pendingTransactions.push(transaction);
   }
 
@@ -243,6 +246,9 @@ class Blockchain {
   }
 
   _executeContract(contractAddress, method, args, caller) {
+    if (!/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(method))
+      return { error: "Nome de método inválido" };
+
     let sourceCode = null;
     for (const b of this.chain)
       for (const tx of b.transactions)
@@ -250,28 +256,29 @@ class Blockchain {
           sourceCode = tx.data.sourceCode;
     if (!sourceCode) return { error: "Contrato não encontrado" };
 
-    // Estado persistente do contrato (lê da chain)
     const state = this._getContractState(contractAddress);
     const results = [];
 
     try {
-      const sandbox = {
+      const sandbox = Object.create(null);
+      Object.assign(sandbox, {
         state,
         caller,
         args: args || [],
         emit: (event, data) => results.push({ event, data }),
         balance: (addr) => this.getBalanceOfAddress(addr),
         tokenBalance: (sym, addr) => this.getTokenBalance(sym, addr),
-        Math, JSON, Date,
+        Math: Object.freeze({ ...Math }),
+        JSON: Object.freeze({ parse: JSON.parse, stringify: JSON.stringify }),
+        Date: Object.freeze({ now: Date.now }),
         result: undefined
-      };
+      });
       vm.createContext(sandbox);
-      vm.runInContext(`
-        ${sourceCode}
-        if (typeof ${method} === "function") {
-          result = ${method}(...args);
-        }
-      `, sandbox, { timeout: 1000 });
+      vm.runInContext(
+        `${sourceCode}\nif (typeof ${method} === "function") { result = ${method}(...args); }`,
+        sandbox,
+        { timeout: 1000 }
+      );
       return { ok: true, result: sandbox.result, state: sandbox.state, events: results };
     } catch (e) {
       return { error: e.message };
@@ -360,6 +367,9 @@ class Blockchain {
     amountOut = (reserveOut * amountIn / (reserveIn + amountIn)) * 0.997;
     amountOut = Math.floor(amountOut * 1e6) / 1e6;
 
+    if (amountOut <= 0 || amountOut >= reserveOut)
+      throw new Error("Liquidez insuficiente para completar o swap");
+
     const tx = new Transaction(ownerAddress, ownerAddress, 0, "SWAP", {
       fromToken, toToken, amount: Number(amountIn), amountOut, poolKey
     });
@@ -389,8 +399,8 @@ class Blockchain {
         }
         if (tx.type === "SWAP" && tx.data?.poolKey === poolKey) {
           const isAtoB = tx.data.fromToken < tx.data.toToken;
-          if (isAtoB) { pool.reserveA += tx.data.amount; pool.reserveB -= tx.data.amountOut; }
-          else         { pool.reserveB += tx.data.amount; pool.reserveA -= tx.data.amountOut; }
+          if (isAtoB) { pool.reserveA += tx.data.amount; pool.reserveB = Math.max(0, pool.reserveB - tx.data.amountOut); }
+          else         { pool.reserveB += tx.data.amount; pool.reserveA = Math.max(0, pool.reserveA - tx.data.amountOut); }
         }
       }
     }
@@ -408,10 +418,12 @@ class Blockchain {
   // ── UTILITÁRIOS ─────────────────────────────────────────────
   getAllTransactionsForAddress(address) {
     const txs = [];
-    for (const b of this.chain)
+    for (let i = 0; i < this.chain.length; i++) {
+      const b = this.chain[i];
       for (const tx of b.transactions)
         if (tx.fromAddress === address || tx.toAddress === address)
-          txs.push({ ...tx, blockIndex: this.chain.indexOf(b) });
+          txs.push({ ...tx, blockIndex: i });
+    }
     return txs;
   }
 

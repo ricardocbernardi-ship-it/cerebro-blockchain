@@ -113,7 +113,8 @@ function substituirCadeiaSeMelhor(recebidos, blockchain, salvar) {
 function handleNewTransaction(txData, blockchain, salvar) {
   try {
     const tx = reviveTx(txData);
-    const jaTem = blockchain.pendingTransactions.some((t) => t.signature === tx.signature);
+    const txHash = tx.calculateHash();
+    const jaTem = blockchain.pendingTransactions.some((t) => t.calculateHash() === txHash);
     if (jaTem) return;
     blockchain.adicionarTransacao(tx);
     salvar(blockchain);

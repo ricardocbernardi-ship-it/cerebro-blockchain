@@ -1,15 +1,66 @@
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const path = require("path");
 const http = require("http");
 const WebSocket = require("ws");
 const Transaction = require("./Transaction");
 const { ec } = require("./crypto");
 
+function sanitizeError(e) {
+  return e.message.replace(/[0-9a-fA-F]{64}/g, "[CHAVE_REDACTED]");
+}
+
+const limiterGeral = rateLimit({
+  windowMs: 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { erro: "Muitas requisições. Aguarde 1 minuto." }
+});
+
+const limiterEscrita = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { erro: "Muitas transações. Aguarde 1 minuto." }
+});
+
+const limiterFaucet = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000,
+  max: 3,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { erro: "Limite do faucet atingido. Aguarde 24h." }
+});
+
 function criarAPI(blockchain, p2p, porta = 3001) {
   const app = express();
-  app.use(cors());
-  app.use(express.json({ limit: "5mb" }));
+
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'", "ws:", "wss:"]
+      }
+    },
+    crossOriginEmbedderPolicy: false
+  }));
+
+  app.use(cors({
+    origin: process.env.CORS_ORIGIN || "*",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"]
+  }));
+
+  app.disable("x-powered-by");
+  app.use(limiterGeral);
+  app.use(express.json({ limit: "100kb" }));
   app.use(express.static(path.join(__dirname, "../public")));
 
   const server = http.createServer(app);
@@ -92,7 +143,7 @@ function criarAPI(blockchain, p2p, porta = 3001) {
   // ── TRANSAÇÕES ──────────────────────────────────────────────
   app.get("/api/pending", (_, res) => res.json({ total: blockchain.pendingTransactions.length, txs: blockchain.pendingTransactions }));
 
-  app.post("/api/transfer", (req, res) => {
+  app.post("/api/transfer", limiterEscrita, (req, res) => {
     try {
       const { toAddress, amount, privateKey } = req.body;
       const keyPair = ec.keyFromPrivate(privateKey, "hex");
@@ -103,17 +154,17 @@ function criarAPI(blockchain, p2p, porta = 3001) {
       broadcast("NEW_TX", tx);
       const block = autoMine(fromAddress);
       res.json({ ok: true, txHash: tx.calculateHash(), from: fromAddress, block: block?.hash });
-    } catch (e) { res.status(400).json({ erro: e.message }); }
+    } catch (e) { res.status(400).json({ erro: sanitizeError(e) }); }
   });
 
   // ── MINERAÇÃO ───────────────────────────────────────────────
-  app.post("/api/mine", (req, res) => {
+  app.post("/api/mine", limiterEscrita, (req, res) => {
     try {
       const { rewardAddress } = req.body;
       const block = blockchain.minerarTransacoesPendentes(rewardAddress);
       broadcast("NEW_BLOCK", { block, stats: blockchain.getNetworkStats() });
       res.json({ ok: true, bloco: blockchain.chain.length - 1, hash: block.hash });
-    } catch (e) { res.status(400).json({ erro: e.message }); }
+    } catch (e) { res.status(400).json({ erro: sanitizeError(e) }); }
   });
 
   // ── TOKENS CBRC-20 ──────────────────────────────────────────
@@ -128,7 +179,7 @@ function criarAPI(blockchain, p2p, porta = 3001) {
     res.json({ symbol, address: req.params.address, balance: blockchain.getTokenBalance(symbol, req.params.address) });
   });
 
-  app.post("/api/token/deploy", (req, res) => {
+  app.post("/api/token/deploy", limiterEscrita, (req, res) => {
     try {
       const { name, symbol, supply, decimals, privateKey } = req.body;
       const keyPair = ec.keyFromPrivate(privateKey, "hex");
@@ -137,10 +188,10 @@ function criarAPI(blockchain, p2p, porta = 3001) {
       broadcast("NEW_TX", tx);
       autoMine(ownerAddress);
       res.json({ ok: true, contract: `CBRC20-${symbol.toUpperCase()}`, txHash: tx.calculateHash() });
-    } catch (e) { res.status(400).json({ erro: e.message }); }
+    } catch (e) { res.status(400).json({ erro: sanitizeError(e) }); }
   });
 
-  app.post("/api/token/transfer", (req, res) => {
+  app.post("/api/token/transfer", limiterEscrita, (req, res) => {
     try {
       const { symbol, toAddress, amount, privateKey } = req.body;
       const keyPair = ec.keyFromPrivate(privateKey, "hex");
@@ -149,7 +200,7 @@ function criarAPI(blockchain, p2p, porta = 3001) {
       broadcast("NEW_TX", tx);
       autoMine(fromAddress);
       res.json({ ok: true, txHash: tx.calculateHash() });
-    } catch (e) { res.status(400).json({ erro: e.message }); }
+    } catch (e) { res.status(400).json({ erro: sanitizeError(e) }); }
   });
 
   // ── NFTs CBRC-721 ───────────────────────────────────────────
@@ -161,7 +212,7 @@ function criarAPI(blockchain, p2p, porta = 3001) {
   });
   app.get("/api/nft/owner/:address", (req, res) => res.json(blockchain.getNFTsByOwner(req.params.address)));
 
-  app.post("/api/nft/mint", (req, res) => {
+  app.post("/api/nft/mint", limiterEscrita, (req, res) => {
     try {
       const { name, description, imageUrl, collection, privateKey } = req.body;
       const keyPair = ec.keyFromPrivate(privateKey, "hex");
@@ -170,10 +221,10 @@ function criarAPI(blockchain, p2p, porta = 3001) {
       broadcast("NEW_NFT", tx.data);
       autoMine(ownerAddress);
       res.json({ ok: true, tokenId: tx.data.tokenId, txHash: tx.calculateHash() });
-    } catch (e) { res.status(400).json({ erro: e.message }); }
+    } catch (e) { res.status(400).json({ erro: sanitizeError(e) }); }
   });
 
-  app.post("/api/nft/transfer", (req, res) => {
+  app.post("/api/nft/transfer", limiterEscrita, (req, res) => {
     try {
       const { tokenId, toAddress, privateKey } = req.body;
       const keyPair = ec.keyFromPrivate(privateKey, "hex");
@@ -182,7 +233,7 @@ function criarAPI(blockchain, p2p, porta = 3001) {
       broadcast("NEW_TX", tx);
       autoMine(fromAddress);
       res.json({ ok: true, txHash: tx.calculateHash() });
-    } catch (e) { res.status(400).json({ erro: e.message }); }
+    } catch (e) { res.status(400).json({ erro: sanitizeError(e) }); }
   });
 
   // ── SMART CONTRACTS JavaScript ───────────────────────────────
@@ -193,7 +244,7 @@ function criarAPI(blockchain, p2p, porta = 3001) {
     res.json(c);
   });
 
-  app.post("/api/contract/deploy", (req, res) => {
+  app.post("/api/contract/deploy", limiterEscrita, (req, res) => {
     try {
       const { name, sourceCode, privateKey } = req.body;
       const keyPair = ec.keyFromPrivate(privateKey, "hex");
@@ -202,10 +253,10 @@ function criarAPI(blockchain, p2p, porta = 3001) {
       broadcast("NEW_CONTRACT", tx.data);
       autoMine(ownerAddress);
       res.json({ ok: true, contractAddress: tx.data.contractAddress, txHash: tx.calculateHash() });
-    } catch (e) { res.status(400).json({ erro: e.message }); }
+    } catch (e) { res.status(400).json({ erro: sanitizeError(e) }); }
   });
 
-  app.post("/api/contract/call", (req, res) => {
+  app.post("/api/contract/call", limiterEscrita, (req, res) => {
     try {
       const { contractAddress, method, args, value, privateKey } = req.body;
       const keyPair = ec.keyFromPrivate(privateKey, "hex");
@@ -213,7 +264,7 @@ function criarAPI(blockchain, p2p, porta = 3001) {
       const result = blockchain._executeContract(contractAddress, method, args, callerAddress);
       if (result.error) return res.status(400).json({ erro: result.error });
       res.json({ ok: true, result: result.result, events: result.events, state: result.state });
-    } catch (e) { res.status(400).json({ erro: e.message }); }
+    } catch (e) { res.status(400).json({ erro: sanitizeError(e) }); }
   });
 
   // ── STAKING ─────────────────────────────────────────────────
@@ -222,7 +273,7 @@ function criarAPI(blockchain, p2p, porta = 3001) {
     res.json({ address: addr, staked: blockchain.getStake(addr), totalStaked: blockchain.getTotalStaked() });
   });
 
-  app.post("/api/stake", (req, res) => {
+  app.post("/api/stake", limiterEscrita, (req, res) => {
     try {
       const { amount, privateKey } = req.body;
       const keyPair = ec.keyFromPrivate(privateKey, "hex");
@@ -231,10 +282,10 @@ function criarAPI(blockchain, p2p, porta = 3001) {
       broadcast("NEW_TX", tx);
       autoMine(addr);
       res.json({ ok: true, staked: amount, txHash: tx.calculateHash() });
-    } catch (e) { res.status(400).json({ erro: e.message }); }
+    } catch (e) { res.status(400).json({ erro: sanitizeError(e) }); }
   });
 
-  app.post("/api/unstake", (req, res) => {
+  app.post("/api/unstake", limiterEscrita, (req, res) => {
     try {
       const { amount, privateKey } = req.body;
       const keyPair = ec.keyFromPrivate(privateKey, "hex");
@@ -243,7 +294,7 @@ function criarAPI(blockchain, p2p, porta = 3001) {
       broadcast("NEW_TX", tx);
       autoMine(addr);
       res.json({ ok: true, unstaked: amount, txHash: tx.calculateHash() });
-    } catch (e) { res.status(400).json({ erro: e.message }); }
+    } catch (e) { res.status(400).json({ erro: sanitizeError(e) }); }
   });
 
   // ── DEX BUILT-IN ────────────────────────────────────────────
@@ -253,7 +304,7 @@ function criarAPI(blockchain, p2p, porta = 3001) {
     res.json(blockchain._getPool(poolKey));
   });
 
-  app.post("/api/swap", (req, res) => {
+  app.post("/api/swap", limiterEscrita, (req, res) => {
     try {
       const { fromToken, toToken, amount, privateKey } = req.body;
       const keyPair = ec.keyFromPrivate(privateKey, "hex");
@@ -262,10 +313,10 @@ function criarAPI(blockchain, p2p, porta = 3001) {
       broadcast("NEW_SWAP", tx.data);
       autoMine(addr);
       res.json({ ok: true, amountOut: tx.data.amountOut, txHash: tx.calculateHash() });
-    } catch (e) { res.status(400).json({ erro: e.message }); }
+    } catch (e) { res.status(400).json({ erro: sanitizeError(e) }); }
   });
 
-  app.post("/api/liquidity/add", (req, res) => {
+  app.post("/api/liquidity/add", limiterEscrita, (req, res) => {
     try {
       const { tokenA, tokenB, amountA, amountB, privateKey } = req.body;
       const keyPair = ec.keyFromPrivate(privateKey, "hex");
@@ -274,7 +325,7 @@ function criarAPI(blockchain, p2p, porta = 3001) {
       broadcast("NEW_TX", tx);
       autoMine(addr);
       res.json({ ok: true, pool: tx.data.poolKey, txHash: tx.calculateHash() });
-    } catch (e) { res.status(400).json({ erro: e.message }); }
+    } catch (e) { res.status(400).json({ erro: sanitizeError(e) }); }
   });
 
   // ── CARTEIRA ────────────────────────────────────────────────
@@ -284,13 +335,25 @@ function criarAPI(blockchain, p2p, porta = 3001) {
   });
 
   // ── FAUCET ──────────────────────────────────────────────────
-  const faucetUsados = new Set();
-  app.post("/api/faucet", (req, res) => {
+  const fs = require("fs");
+  const faucetFile = require("path").join(__dirname, "../dados/faucet-usados.json");
+  const _carregarFaucet = () => {
+    try { return new Set(JSON.parse(fs.readFileSync(faucetFile, "utf8"))); }
+    catch { return new Set(); }
+  };
+  const _salvarFaucet = (set) => {
+    try { fs.writeFileSync(faucetFile, JSON.stringify([...set])); } catch {}
+  };
+  const faucetUsados = _carregarFaucet();
+
+  app.post("/api/faucet", limiterFaucet, (req, res) => {
     try {
       const { address } = req.body;
-      if (!address) return res.status(400).json({ erro: "Endereço obrigatório" });
-      if (faucetUsados.has(address)) return res.status(400).json({ erro: "Faucet já usado para este endereço" });
-      const FAUCET_KEY = "faucet00000000000000000000000001000000000000000000000000000000000000".slice(0, 64);
+      if (!address || typeof address !== "string" || address.length < 10)
+        return res.status(400).json({ erro: "Endereço inválido" });
+      if (faucetUsados.has(address))
+        return res.status(400).json({ erro: "Faucet já usado para este endereço" });
+      const FAUCET_KEY = process.env.FAUCET_PRIVATE_KEY || "0000000000000000000000000000000000000000000000000000000000000001";
       const keyPair = ec.keyFromPrivate(FAUCET_KEY, "hex");
       const faucetAddr = keyPair.getPublic("hex");
       const saldo = blockchain.getBalanceOfAddress(faucetAddr);
@@ -299,9 +362,10 @@ function criarAPI(blockchain, p2p, porta = 3001) {
       tx.signTransaction(keyPair);
       blockchain.adicionarTransacao(tx);
       faucetUsados.add(address);
+      _salvarFaucet(faucetUsados);
       autoMine(faucetAddr);
       res.json({ ok: true, amount: 10, txHash: tx.calculateHash() });
-    } catch (e) { res.status(400).json({ erro: e.message }); }
+    } catch (e) { res.status(400).json({ erro: sanitizeError(e) }); }
   });
 
   server.listen(porta, () => {

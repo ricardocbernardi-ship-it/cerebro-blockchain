@@ -86,7 +86,7 @@ async function main() {
     polAmt  * 90n / 100n,
     wallet,
     deadline,
-    { ...opts, value: polAmt, gasLimit: 300_000 }
+    { ...opts, value: polAmt, gasLimit: 3_000_000 }
   );
 
   console.log(`📡 TX: ${tx.hash}`);

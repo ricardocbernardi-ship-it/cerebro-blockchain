@@ -1,9 +1,19 @@
 {
-  "name": "cerebro-blockchain",
+  "name": "@ricardocb/cerebro-blockchain",
   "version": "3.0.0",
   "description": "CEREBRO — Blockchain com Smart Contracts em JavaScript, NFTs CBRC-721, Tokens CBRC-20, DEX AMM nativo e Staking",
   "main": "cerebro.js",
-  "keywords": ["blockchain","javascript","smart-contracts","nft","defi","dex","staking","cbr","cerebro"],
+  "keywords": [
+    "blockchain",
+    "javascript",
+    "smart-contracts",
+    "nft",
+    "defi",
+    "dex",
+    "staking",
+    "cbr",
+    "cerebro"
+  ],
   "author": "Ricardo C. Bernardi <ricardocardosobernardi@gmail.com>",
   "license": "MIT",
   "homepage": "https://ricardocbernardi-ship-it.github.io/cerebro-blockchain/",
@@ -20,8 +30,14 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "elliptic": "^6.5.5",
+    "ethers": "^6.16.0",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
+    "helmet": "^8.2.0",
     "localtunnel": "^2.0.2",
     "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "solc": "^0.8.35"
   }
 }
