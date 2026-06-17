@@ -7,21 +7,22 @@
 
 ### Post de Lançamento (fixar no perfil)
 ```
-🧠 Apresentando o CEREBRO Blockchain
+🧠 CEREBRO Blockchain — wCBR ao vivo no QuickSwap!
 
 A única blockchain com Smart Contracts em JavaScript.
 
+✅ wCBR disponível para COMPRA na Polygon
+✅ Pool QuickSwap V2 ativo agora
 ✅ Contratos em JS (sem Solidity/Rust)
 ✅ NFTs nativos CBRC-721
-✅ DEX AMM nativo
-✅ Staking nativo
-✅ Taxa de gas: ZERO
 ✅ Supply: 21M CBR (como o Bitcoin)
 
-Mine agora 👇
-github.com/ricardocbernardi-ship-it/cerebro-blockchain
+💱 Compre wCBR agora:
+quickswap.exchange (pesquise: 0x208B65B781245AB72419FD6b159c65818ca69C08)
 
-#CEREBRO #CBR #Blockchain #DeFi #NFT #Crypto
+📊 Ver gráfico: dextools.io/app/polygon/pair-explorer/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2
+
+#CEREBRO #wCBR #Polygon #QuickSwap #DeFi #Crypto
 ```
 
 ### Post para Mineradores
