@@ -22,7 +22,8 @@ A única blockchain com Smart Contracts em JavaScript.
 💱 Compre wCBR agora:
 quickswap.exchange (pesquise: 0x208B65B781245AB72419FD6b159c65818ca69C08)
 
-📊 Ver gráfico: dextools.io/app/polygon/pair-explorer/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2
+📊 DexTools: dextools.io/app/polygon/pair-explorer/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2
+📈 DexScreener: dexscreener.com/polygon/0x4eb7b05ad067a5dedb5393e6a1dd728bf5c756b2
 
 #CEREBRO #wCBR #Polygon #QuickSwap #DeFi #Crypto
 ```
