@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CEREBRO — Templates de Smart Contracts</title>
+<style>
+:root{--acc:#a259ff;--grn:#00e676;--bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;--bd:#2a2a2a;--txt:#f0f0f0;--mut:#888}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--txt)}
+nav{display:flex;align-items:center;gap:16px;padding:14px 24px;background:var(--bg2);border-bottom:1px solid var(--bd)}
+.logo{font-size:18px;font-weight:900;color:var(--acc)}
+nav a{color:var(--mut);text-decoration:none;font-size:13px}
+nav a:hover{color:var(--txt)}
+.hero{text-align:center;padding:50px 20px 36px;background:linear-gradient(135deg,#0d0a1a,#0a0d1a)}
+.hero h1{font-size:38px;font-weight:900;margin-bottom:10px}
+.hero h1 span{color:var(--acc)}
+.hero p{font-size:15px;color:var(--mut)}
+main{max-width:1300px;margin:0 auto;padding:32px 20px 80px;display:grid;grid-template-columns:260px 1fr;gap:24px}
+.sidebar{position:sticky;top:16px;align-self:start}
+.s-title{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--mut);margin-bottom:12px;font-weight:700}
+.cat-btn{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;cursor:pointer;border:none;background:transparent;color:var(--mut);font-size:13px;width:100%;text-align:left}
+.cat-btn:hover,.cat-btn.active{background:var(--bg3);color:var(--txt)}
+.cat-btn.active{color:var(--acc)}
+.cat-icon{font-size:16px;width:24px;text-align:center}
+.content{}
+.t-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:32px}
+.t-card{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:18px;cursor:pointer;transition:.2s}
+.t-card:hover{border-color:var(--acc);box-shadow:0 4px 24px #a259ff18}
+.t-icon{font-size:28px;margin-bottom:10px}
+.t-name{font-size:15px;font-weight:800;margin-bottom:6px}
+.t-desc{font-size:12px;color:var(--mut);line-height:1.6;margin-bottom:12px}
+.t-tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;background:var(--bg3);border:1px solid var(--bd);color:var(--mut)}
+.t-btn{margin-top:12px;padding:7px 14px;border-radius:8px;background:var(--acc);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;width:100%}
+.panel{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;overflow:hidden;display:none}
+.panel.open{display:block}
+.panel-head{padding:18px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-size:16px;font-weight:800}
+.panel-close{background:none;border:none;color:var(--mut);font-size:18px;cursor:pointer}
+.panel-body{padding:20px}
+.code-wrap{position:relative}
+.code-block{background:#080808;border:1px solid var(--bd);border-radius:8px;padding:16px;font-family:'Courier New',monospace;font-size:12px;line-height:1.7;overflow-x:auto;white-space:pre;color:#c8d0e0;max-height:360px;overflow-y:auto}
+.kw{color:#a259ff}.fn{color:#61dafb}.str{color:#a8ff78}.cmt{color:#4a5568}.num{color:#ffd54f}
+.copy-btn{position:absolute;top:8px;right:8px;background:var(--bg3);border:1px solid var(--bd);border-radius:6px;color:var(--mut);font-size:11px;padding:4px 10px;cursor:pointer}
+.copy-btn:hover{color:var(--acc);border-color:var(--acc)}
+.deploy-section{margin-top:16px;background:var(--bg3);border:1px solid var(--bd);border-radius:10px;padding:16px}
+.d-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--mut);margin-bottom:5px}
+input,textarea{width:100%;background:#0a0a0a;border:1px solid var(--bd);border-radius:7px;color:var(--txt);padding:9px 12px;font-size:13px;outline:none;margin-bottom:10px}
+input:focus,textarea:focus{border-color:var(--acc)}
+.dep-btn{width:100%;padding:11px;background:var(--acc);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:800;cursor:pointer}
+.result{margin-top:10px;display:none;background:#0d180d;border:1px solid #00e67633;border-radius:8px;padding:12px;font-size:12px;line-height:1.7;font-family:monospace}
+.cat-section{margin-bottom:32px}
+.cat-head{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--mut);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+@media(max-width:768px){main{grid-template-columns:1fr}.sidebar{display:none}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">🧠 CEREBRO</div>
+  <a href="/">Home</a>
+  <a href="/explorer.html">Explorer</a>
+  <a href="/wallet.html">Wallet</a>
+  <a href="/marketplace.html">NFTs</a>
+  <a href="/whitepaper.html">Whitepaper</a>
+</nav>
+<div class="hero">
+  <h1>Templates de <span>Smart Contracts</span></h1>
+  <p>Contratos prontos em JavaScript. Copie, deploy e use em segundos.</p>
+</div>
+
+<main>
+  <div class="sidebar">
+    <div class="s-title">Categorias</div>
+    <button class="cat-btn active" onclick="filterCat('todos',this)"><span class="cat-icon">🌐</span>Todos</button>
+    <button class="cat-btn" onclick="filterCat('financas',this)"><span class="cat-icon">💰</span>Finanças</button>
+    <button class="cat-btn" onclick="filterCat('governanca',this)"><span class="cat-icon">🗳️</span>Governança</button>
+    <button class="cat-btn" onclick="filterCat('jogos',this)"><span class="cat-icon">🎮</span>Jogos</button>
+    <button class="cat-btn" onclick="filterCat('social',this)"><span class="cat-icon">👥</span>Social</button>
+    <button class="cat-btn" onclick="filterCat('utilidade',this)"><span class="cat-icon">⚙️</span>Utilidade</button>
+  </div>
+
+  <div class="content">
+    <div class="t-grid" id="grid"></div>
+
+    <!-- DEPLOY PANEL -->
+    <div class="panel" id="deploy-panel">
+      <div class="panel-head">
+        <div class="panel-title" id="p-title">Contrato</div>
+        <button class="panel-close" onclick="closePanel()">✕</button>
+      </div>
+      <div class="panel-body">
+        <p id="p-desc" style="font-size:13px;color:var(--mut);margin-bottom:14px"></p>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode()">Copiar</button>
+          <div class="code-block" id="p-code"></div>
+        </div>
+        <div class="deploy-section">
+          <div class="d-label">Nome do contrato</div>
+          <input id="d-name" placeholder="Ex: MeuContrato">
+          <div class="d-label">Chave privada</div>
+          <input type="password" id="d-key" placeholder="Sua chave privada...">
+          <button class="dep-btn" onclick="deployTemplate()">🚀 Deploy na CEREBRO</button>
+          <div class="result" id="d-result"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const templates = [
+  {
+    id:"vault", cat:"financas", icon:"🔐", name:"Cofre (Vault)",
+    desc:"Guarde CBR com timelock. Ninguém pode sacar antes da data definida.",
+    tags:["DeFi","Timelock","Segurança"],
+    code:`// CEREBRO Vault — bloqueio por tempo
+function depositar() {
+  const agora = Date.now();
+  if (!state.depositos) state.depositos = {};
+  state.depositos[caller] = {
+    valor: (state.depositos[caller]?.valor || 0) + amount,
+    liberacaoEm: agora + (state.lockDias || 30) * 86400000
+  };
+  emit('Deposito', { quem: caller, valor: amount });
+  return state.depositos[caller];
+}
+
+function sacar() {
+  const dep = state.depositos?.[caller];
+  if (!dep) throw new Error('Nenhum depósito encontrado');
+  if (Date.now() < dep.liberacaoEm) {
+    const dias = Math.ceil((dep.liberacaoEm - Date.now()) / 86400000);
+    throw new Error(\`Ainda bloqueado por \${dias} dias\`);
+  }
+  const valor = dep.valor;
+  delete state.depositos[caller];
+  emit('Saque', { quem: caller, valor });
+  return valor;
+}
+
+function setLock(dias) {
+  state.lockDias = dias;
+  return { lockDias: dias };
+}
+
+function status(endereco) {
+  return state.depositos?.[endereco] || { valor: 0 };
+}`
+  },
+  {
+    id:"dao", cat:"governanca", icon:"🗳️", name:"DAO Votação",
+    desc:"Crie propostas e vote. Decisões democráticas on-chain.",
+    tags:["DAO","Governança","Votação"],
+    code:`// CEREBRO DAO — votação descentralizada
+function criarProposta(titulo, descricao, duracaoHoras) {
+  if (!state.propostas) state.propostas = {};
+  const id = Object.keys(state.propostas).length + 1;
+  state.propostas[id] = {
+    id, titulo, descricao,
+    criador: caller,
+    votos: { sim: 0, nao: 0 },
+    votantes: {},
+    encerraEm: Date.now() + (duracaoHoras || 48) * 3600000,
+    aprovada: null
+  };
+  emit('PropostaCriada', { id, titulo, criador: caller });
+  return { id };
+}
+
+function votar(propostaId, voto) {
+  const p = state.propostas?.[propostaId];
+  if (!p) throw new Error('Proposta não encontrada');
+  if (Date.now() > p.encerraEm) throw new Error('Votação encerrada');
+  if (p.votantes[caller]) throw new Error('Já votou');
+  p.votantes[caller] = voto;
+  if (voto === 'sim') p.votos.sim++;
+  else p.votos.nao++;
+  emit('Voto', { propostaId, votante: caller, voto });
+  return p.votos;
+}
+
+function encerrar(propostaId) {
+  const p = state.propostas?.[propostaId];
+  if (!p) throw new Error('Proposta não encontrada');
+  p.aprovada = p.votos.sim > p.votos.nao;
+  emit('PropostaEncerrada', { propostaId, aprovada: p.aprovada, votos: p.votos });
+  return p;
+}
+
+function listarPropostas() {
+  return Object.values(state.propostas || {});
+}`
+  },
+  {
+    id:"lottery", cat:"jogos", icon:"🎰", name:"Loteria",
+    desc:"Sorteio transparente e verificável on-chain. O vencedor leva tudo.",
+    tags:["Jogos","Sorteio","DeFi"],
+    code:`// CEREBRO Lottery — loteria on-chain
+function entrar() {
+  if (!state.participantes) state.participantes = [];
+  if (state.participantes.includes(caller)) throw new Error('Já entrou');
+  if (!state.ativo) throw new Error('Loteria não está ativa');
+  state.participantes.push(caller);
+  state.premio = (state.premio || 0) + amount;
+  emit('Entrada', { jogador: caller, premio: state.premio });
+  return { participantes: state.participantes.length, premio: state.premio };
+}
+
+function sortear() {
+  if (!state.participantes?.length) throw new Error('Sem participantes');
+  const seed = Date.now().toString() + state.participantes.join('');
+  let hash = 0;
+  for (let c of seed) hash = (hash * 31 + c.charCodeAt(0)) & 0xffffffff;
+  const idx = Math.abs(hash) % state.participantes.length;
+  const vencedor = state.participantes[idx];
+  const premio = state.premio;
+  state.participantes = [];
+  state.premio = 0;
+  state.ativo = true;
+  emit('Vencedor', { vencedor, premio });
+  return { vencedor, premio };
+}
+
+function iniciar() { state.ativo = true; return 'Loteria iniciada'; }
+function pausar() { state.ativo = false; return 'Loteria pausada'; }
+function status() {
+  return { ativo: !!state.ativo, participantes: state.participantes?.length || 0, premio: state.premio || 0 };
+}`
+  },
+  {
+    id:"escrow", cat:"financas", icon:"🤝", name:"Escrow",
+    desc:"Pagamento condicional. Libera fundos apenas quando ambas as partes concordam.",
+    tags:["DeFi","Pagamento","Confiança"],
+    code:`// CEREBRO Escrow — pagamento seguro entre partes
+function criar(vendedor, descricao) {
+  if (!state.contratos) state.contratos = {};
+  const id = Date.now().toString();
+  state.contratos[id] = {
+    id, comprador: caller, vendedor,
+    valor: amount, descricao,
+    status: 'pendente',
+    criadoEm: Date.now()
+  };
+  emit('EscrowCriado', { id, comprador: caller, vendedor, valor: amount });
+  return { id };
+}
+
+function confirmar(escrowId) {
+  const e = state.contratos?.[escrowId];
+  if (!e) throw new Error('Escrow não encontrado');
+  if (caller !== e.comprador) throw new Error('Apenas o comprador pode confirmar');
+  if (e.status !== 'pendente') throw new Error('Escrow não está pendente');
+  e.status = 'confirmado';
+  emit('EscrowConfirmado', { id: escrowId, vendedor: e.vendedor, valor: e.valor });
+  return e;
+}
+
+function disputar(escrowId, motivo) {
+  const e = state.contratos?.[escrowId];
+  if (!e) throw new Error('Escrow não encontrado');
+  if (caller !== e.comprador && caller !== e.vendedor) throw new Error('Sem permissão');
+  e.status = 'disputa';
+  e.motivo = motivo;
+  emit('EscrowDisputa', { id: escrowId, quem: caller, motivo });
+  return e;
+}
+
+function listar(endereco) {
+  return Object.values(state.contratos || {}).filter(
+    e => e.comprador === endereco || e.vendedor === endereco
+  );
+}`
+  },
+  {
+    id:"multisig", cat:"governanca", icon:"🔑", name:"Multisig Wallet",
+    desc:"Requer N de M assinaturas para aprovar transações. Segurança máxima.",
+    tags:["Segurança","Multisig","Governança"],
+    code:`// CEREBRO MultiSig — carteira multi-assinatura
+function configurar(signatarios, minAssinaturas) {
+  state.signatarios = signatarios;
+  state.minAssinaturas = minAssinaturas;
+  emit('MultiSigConfigurado', { signatarios, minAssinaturas });
+  return state;
+}
+
+function propor(destinatario, valor, descricao) {
+  if (!state.signatarios?.includes(caller)) throw new Error('Não é signatário');
+  if (!state.propostas) state.propostas = {};
+  const id = Date.now().toString();
+  state.propostas[id] = {
+    id, destinatario, valor, descricao,
+    assinaturas: [caller], executado: false, criadoEm: Date.now()
+  };
+  emit('PropostaCriada', { id, propositor: caller, valor });
+  return { id };
+}
+
+function assinar(propostaId) {
+  if (!state.signatarios?.includes(caller)) throw new Error('Não é signatário');
+  const p = state.propostas?.[propostaId];
+  if (!p) throw new Error('Proposta não encontrada');
+  if (p.assinaturas.includes(caller)) throw new Error('Já assinou');
+  if (p.executado) throw new Error('Já executada');
+  p.assinaturas.push(caller);
+  emit('Assinado', { propostaId, signatario: caller, total: p.assinaturas.length });
+  if (p.assinaturas.length >= (state.minAssinaturas || 2)) {
+    p.executado = true;
+    emit('Executado', { propostaId, destinatario: p.destinatario, valor: p.valor });
+  }
+  return p;
+}
+
+function listar() { return Object.values(state.propostas || {}); }`
+  },
+  {
+    id:"registro", cat:"social", icon:"📜", name:"Registro de Documentos",
+    desc:"Registre hashes de documentos on-chain. Prove autoria e data permanentemente.",
+    tags:["Utilidade","Documentos","Prova"],
+    code:`// CEREBRO DocRegistry — registro imutável de documentos
+function registrar(hashDocumento, descricao, metadata) {
+  if (!state.registros) state.registros = {};
+  if (state.registros[hashDocumento]) {
+    throw new Error('Documento já registrado no bloco ' + state.registros[hashDocumento].bloco);
+  }
+  state.registros[hashDocumento] = {
+    hash: hashDocumento,
+    dono: caller,
+    descricao,
+    metadata: metadata || {},
+    timestamp: Date.now()
+  };
+  emit('Registrado', { hash: hashDocumento, dono: caller, descricao });
+  return state.registros[hashDocumento];
+}
+
+function verificar(hashDocumento) {
+  const reg = state.registros?.[hashDocumento];
+  if (!reg) return { valido: false, mensagem: 'Documento não encontrado' };
+  return { valido: true, ...reg };
+}
+
+function meusDocs(endereco) {
+  return Object.values(state.registros || {}).filter(r => r.dono === endereco);
+}
+
+function total() { return Object.keys(state.registros || {}).length; }`
+  },
+  {
+    id:"pontos", cat:"social", icon:"⭐", name:"Sistema de Pontos",
+    desc:"Programa de fidelidade e recompensas tokenizado. Distribua pontos por ações.",
+    tags:["Social","Fidelidade","Gamification"],
+    code:`// CEREBRO PointsSystem — programa de recompensas
+function configurar(nome, taxa) {
+  state.nome = nome || 'CerebroPoints';
+  state.taxa = taxa || 10;
+  state.admin = caller;
+  return state;
+}
+
+function ganhar(usuario, acao) {
+  if (!state.pontos) state.pontos = {};
+  const bonus = { compra: 10, review: 5, referral: 50, login: 1 };
+  const pts = bonus[acao] || state.taxa;
+  state.pontos[usuario] = (state.pontos[usuario] || 0) + pts;
+  emit('PontosGanhos', { usuario, acao, pontos: pts, total: state.pontos[usuario] });
+  return state.pontos[usuario];
+}
+
+function resgatar(pontos) {
+  const atual = state.pontos?.[caller] || 0;
+  if (atual < pontos) throw new Error(\`Saldo insuficiente: \${atual} pts\`);
+  state.pontos[caller] -= pontos;
+  if (!state.resgates) state.resgates = {};
+  state.resgates[caller] = (state.resgates[caller] || 0) + pontos;
+  emit('PontosResgatados', { usuario: caller, pontos, restante: state.pontos[caller] });
+  return { resgatado: pontos, saldo: state.pontos[caller] };
+}
+
+function saldo(usuario) { return state.pontos?.[usuario] || 0; }
+function ranking() {
+  return Object.entries(state.pontos || {})
+    .sort(([,a],[,b]) => b - a).slice(0, 10)
+    .map(([addr, pts]) => ({ addr, pts }));
+}`
+  },
+  {
+    id:"timer", cat:"utilidade", icon:"⏱️", name:"Timer On-Chain",
+    desc:"Alarmes e agendamentos verificáveis na blockchain. Nunca esquece, nunca mente.",
+    tags:["Utilidade","Automação","Tempo"],
+    code:`// CEREBRO ChainTimer — agendamentos on-chain
+function criar(descricao, executarEm) {
+  if (!state.timers) state.timers = {};
+  const id = \`T\${Date.now()}\`;
+  state.timers[id] = {
+    id, dono: caller, descricao,
+    executarEm: executarEm || Date.now() + 3600000,
+    criado: Date.now(), disparado: false
+  };
+  emit('TimerCriado', { id, dono: caller, executarEm });
+  return { id };
+}
+
+function verificar(timerId) {
+  const t = state.timers?.[timerId];
+  if (!t) throw new Error('Timer não encontrado');
+  if (t.disparado) return { status: 'disparado', timer: t };
+  if (Date.now() >= t.executarEm) {
+    t.disparado = true;
+    t.disparadoEm = Date.now();
+    emit('TimerDisparado', { id: timerId, dono: t.dono, descricao: t.descricao });
+    return { status: 'disparado agora', timer: t };
+  }
+  const restante = Math.ceil((t.executarEm - Date.now()) / 1000);
+  return { status: 'pendente', restanteSegundos: restante, timer: t };
+}
+
+function meus() {
+  return Object.values(state.timers || {}).filter(t => t.dono === caller);
+}
+
+function cancelar(timerId) {
+  const t = state.timers?.[timerId];
+  if (!t || t.dono !== caller) throw new Error('Sem permissão');
+  delete state.timers[timerId];
+  return 'Cancelado';
+}`
+  }
+];
+
+let filtroAtual = "todos";
+let templateAtual = null;
+
+function filterCat(cat, btn) {
+  filtroAtual = cat;
+  document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  closePanel();
+  renderGrid();
+}
+
+function renderGrid() {
+  const filtered = filtroAtual === "todos" ? templates : templates.filter(t => t.cat === filtroAtual);
+  document.getElementById("grid").innerHTML = filtered.map(t => `
+  <div class="t-card" onclick='openTemplate(${JSON.stringify(t).replace(/'/g,"&#39;")})'>
+    <div class="t-icon">${t.icon}</div>
+    <div class="t-name">${t.name}</div>
+    <div class="t-desc">${t.desc}</div>
+    <div class="t-tags">${t.tags.map(g=>`<span class="tag">${g}</span>`).join("")}</div>
+    <button class="t-btn">Deploy → CEREBRO</button>
+  </div>`).join("");
+}
+
+function syntaxHL(code) {
+  return code
+    .replace(/\/\/.*/g, m=>`<span class="cmt">${m}</span>`)
+    .replace(/\b(function|return|if|else|throw|const|let|var|new|for|of|in|delete)\b/g, '<span class="kw">$1</span>')
+    .replace(/\b(emit|state|caller|amount|Date|Object|Math|Error|JSON)\b/g, '<span class="fn">$1</span>')
+    .replace(/`[^`]*`/g, m=>`<span class="str">${m}</span>`)
+    .replace(/'[^']*'/g, m=>`<span class="str">${m}</span>`)
+    .replace(/"[^"]*"/g, m=>`<span class="str">${m}</span>`)
+    .replace(/\b(\d+)\b/g, '<span class="num">$1</span>');
+}
+
+function openTemplate(t) {
+  templateAtual = t;
+  document.getElementById("p-title").textContent = t.icon + " " + t.name;
+  document.getElementById("p-desc").textContent = t.desc;
+  document.getElementById("p-code").innerHTML = syntaxHL(t.code);
+  document.getElementById("d-name").value = t.name.replace(/\s+/g,"");
+  document.getElementById("d-result").style.display = "none";
+  document.getElementById("deploy-panel").classList.add("open");
+  document.getElementById("deploy-panel").scrollIntoView({behavior:"smooth", block:"nearest"});
+}
+
+function closePanel() {
+  document.getElementById("deploy-panel").classList.remove("open");
+  templateAtual = null;
+}
+
+function copyCode() {
+  if (!templateAtual) return;
+  navigator.clipboard.writeText(templateAtual.code).then(() => {
+    const btn = document.querySelector(".copy-btn");
+    btn.textContent = "Copiado!";
+    btn.style.color = "var(--grn)";
+    setTimeout(() => { btn.textContent = "Copiar"; btn.style.color = ""; }, 2000);
+  });
+}
+
+async function deployTemplate() {
+  if (!templateAtual) return;
+  const name = document.getElementById("d-name").value.trim();
+  const key = document.getElementById("d-key").value.trim();
+  const el = document.getElementById("d-result");
+  if (!name || !key) { alert("Preencha nome e chave privada"); return; }
+  el.style.display = "block";
+  el.textContent = "Deployando...";
+  const r = await fetch("/api/contract/deploy", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, sourceCode: templateAtual.code, privateKey: key })
+  }).then(r => r.json()).catch(e => ({ erro: e.message }));
+  if (r.ok) {
+    el.style.background = "#0d1a0d";
+    el.style.borderColor = "#00e67633";
+    el.innerHTML = `✅ <b>${name}</b> deployado!\nEndereço: <code>${r.contractAddress}</code>\n\nUse /api/contract/call para chamar funções.`;
+  } else {
+    el.style.background = "#1a0d0d";
+    el.style.borderColor = "#ff174433";
+    el.textContent = "❌ " + (r.erro || "Erro desconhecido");
+  }
+}
+
+renderGrid();
+</script>
+</body>
+</html>

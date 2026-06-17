@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CEREBRO NFT Marketplace</title>
+<style>
+:root{--acc:#a259ff;--grn:#00e676;--bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;--bd:#2a2a2a;--txt:#f0f0f0;--mut:#888}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--txt)}
+nav{display:flex;align-items:center;gap:16px;padding:14px 24px;background:var(--bg2);border-bottom:1px solid var(--bd)}
+.logo{font-size:18px;font-weight:900;color:var(--acc)}
+nav a{color:var(--mut);text-decoration:none;font-size:13px}
+nav a:hover{color:var(--txt)}
+.btn{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none}
+.btn-acc{background:var(--acc);color:#fff}.btn-out{background:transparent;border:1px solid var(--bd);color:var(--txt)}
+.hero{text-align:center;padding:60px 20px 40px;background:linear-gradient(135deg,#0d0a1a,#0a0d1a)}
+.hero h1{font-size:42px;font-weight:900;margin-bottom:12px}
+.hero h1 span{color:var(--acc)}
+.hero p{font-size:16px;color:var(--mut);margin-bottom:28px}
+.filters{display:flex;gap:10px;align-items:center;padding:16px 24px;border-bottom:1px solid var(--bd);flex-wrap:wrap;background:var(--bg2)}
+.filter-btn{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--bd);background:transparent;color:var(--mut)}
+.filter-btn.active,.filter-btn:hover{border-color:var(--acc);color:var(--acc);background:#1a1225}
+.search{background:var(--bg3);border:1px solid var(--bd);border-radius:8px;color:var(--txt);padding:8px 14px;font-size:13px;outline:none;width:240px}
+.search:focus{border-color:var(--acc)}
+main{padding:24px;max-width:1400px;margin:0 auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.nft-card{background:var(--bg3);border:1px solid var(--bd);border-radius:14px;overflow:hidden;transition:.2s;cursor:pointer}
+.nft-card:hover{border-color:var(--acc);transform:translateY(-4px);box-shadow:0 8px 32px #a259ff22}
+.nft-img{width:100%;aspect-ratio:1;background:linear-gradient(135deg,#1a1225,#0a1a1a);display:flex;align-items:center;justify-content:center;font-size:64px;overflow:hidden;position:relative}
+.nft-img img{width:100%;height:100%;object-fit:cover}
+.nft-badge{position:absolute;top:10px;right:10px;background:#000a;border:1px solid var(--acc);border-radius:6px;padding:3px 8px;font-size:10px;font-weight:800;color:var(--acc)}
+.nft-body{padding:14px}
+.nft-col{font-size:10px;color:var(--acc);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.nft-name{font-size:15px;font-weight:800;margin-bottom:8px}
+.nft-row{display:flex;align-items:center;justify-content:space-between}
+.nft-owner{font-family:monospace;font-size:10px;color:var(--mut)}
+.nft-price{font-size:14px;font-weight:800;color:var(--grn)}
+.mint-section{background:var(--bg2);border-top:1px solid var(--bd);padding:60px 24px;text-align:center}
+.mint-section h2{font-size:28px;font-weight:900;margin-bottom:12px}
+.mint-section p{font-size:15px;color:var(--mut);margin-bottom:28px}
+.modal{display:none;position:fixed;inset:0;background:#000c;z-index:200;align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-box{background:var(--bg3);border:1px solid var(--bd);border-radius:16px;padding:24px;max-width:500px;width:90%;max-height:85vh;overflow-y:auto}
+.m-title{font-size:17px;font-weight:800;margin-bottom:16px;color:var(--acc)}
+.close-m{float:right;cursor:pointer;background:none;border:none;color:var(--txt);font-size:18px}
+.nft-big{width:100%;aspect-ratio:1;border-radius:12px;background:linear-gradient(135deg,#1a1225,#0a1a1a);display:flex;align-items:center;justify-content:center;font-size:80px;overflow:hidden;margin-bottom:16px}
+.nft-big img{width:100%;height:100%;object-fit:cover;border-radius:12px}
+.detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a1a1a;font-size:13px}
+.detail-row:last-child{border:none}
+.empty-state{text-align:center;padding:80px 20px;color:var(--mut)}
+.empty-state .icon{font-size:48px;margin-bottom:16px}
+.empty-state h3{font-size:20px;font-weight:700;margin-bottom:8px;color:var(--txt)}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);margin-bottom:0}
+.stat{background:var(--bg2);padding:14px;text-align:center}
+.stat-v{font-size:22px;font-weight:900;color:var(--acc)}
+.stat-l{font-size:10px;color:var(--mut);text-transform:uppercase;margin-top:2px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">🧠 CEREBRO NFT</div>
+  <a href="/">Home</a>
+  <a href="/explorer.html">Explorer</a>
+  <a href="/wallet.html">Wallet</a>
+  <div style="margin-left:auto">
+    <button class="btn btn-acc" onclick="document.getElementById('modal-mint').classList.add('open')">+ Criar NFT</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>Marketplace <span>CBRC-721</span></h1>
+  <p>Crie, compre e transfira NFTs na blockchain CEREBRO. Sem taxas de gas. Sem intermediários.</p>
+  <button class="btn btn-acc" onclick="document.getElementById('modal-mint').classList.add('open')">🎨 Criar meu primeiro NFT</button>
+</div>
+
+<div class="stats-row" id="stats-row">
+  <div class="stat"><div class="stat-v" id="s-nfts">—</div><div class="stat-l">NFTs Criados</div></div>
+  <div class="stat"><div class="stat-v" id="s-col">—</div><div class="stat-l">Coleções</div></div>
+  <div class="stat"><div class="stat-v" id="s-donos">—</div><div class="stat-l">Criadores</div></div>
+  <div class="stat"><div class="stat-v" style="color:var(--grn)">0%</div><div class="stat-l">Taxa de Gas</div></div>
+</div>
+
+<div class="filters">
+  <input class="search" id="search" placeholder="Buscar NFT..." oninput="filtrar()">
+  <button class="filter-btn active" onclick="setFiltro('todos',this)">Todos</button>
+  <div id="col-filters"></div>
+</div>
+
+<main>
+  <div class="grid" id="nft-grid">
+    <div class="empty-state" style="grid-column:1/-1">
+      <div class="icon">🎨</div>
+      <h3>Carregando NFTs...</h3>
+    </div>
+  </div>
+</main>
+
+<div class="mint-section">
+  <h2>Crie seu NFT agora</h2>
+  <p>É grátis, instantâneo e permanente na blockchain CEREBRO.</p>
+  <button class="btn btn-acc" style="font-size:15px;padding:14px 32px" onclick="document.getElementById('modal-mint').classList.add('open')">🎨 Criar NFT Grátis</button>
+</div>
+
+<!-- MODAL DETALHE -->
+<div class="modal" id="modal-detail" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-box">
+    <button class="close-m" onclick="document.getElementById('modal-detail').classList.remove('open')">✕</button>
+    <div class="m-title" id="m-name">NFT</div>
+    <div id="m-content"></div>
+  </div>
+</div>
+
+<!-- MODAL MINT -->
+<div class="modal" id="modal-mint" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-box">
+    <button class="close-m" onclick="document.getElementById('modal-mint').classList.remove('open')">✕</button>
+    <div class="m-title">🎨 Criar NFT CBRC-721</div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div><label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--mut);display:block;margin-bottom:5px">Nome do NFT</label>
+        <input id="m-nname" placeholder="Ex: Arte Cerebro #1" style="width:100%;background:#111;border:1px solid #2a2a2a;border-radius:8px;color:#f0f0f0;padding:10px 14px;font-size:13px;outline:none"></div>
+      <div><label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--mut);display:block;margin-bottom:5px">Coleção</label>
+        <input id="m-ncol" placeholder="Ex: MinhaColecao" style="width:100%;background:#111;border:1px solid #2a2a2a;border-radius:8px;color:#f0f0f0;padding:10px 14px;font-size:13px;outline:none"></div>
+      <div><label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--mut);display:block;margin-bottom:5px">Descrição</label>
+        <input id="m-ndesc" placeholder="Descreva seu NFT..." style="width:100%;background:#111;border:1px solid #2a2a2a;border-radius:8px;color:#f0f0f0;padding:10px 14px;font-size:13px;outline:none"></div>
+      <div><label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--mut);display:block;margin-bottom:5px">URL da Imagem (opcional)</label>
+        <input id="m-nimg" placeholder="https://..." style="width:100%;background:#111;border:1px solid #2a2a2a;border-radius:8px;color:#f0f0f0;padding:10px 14px;font-size:13px;outline:none"></div>
+      <div><label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--mut);display:block;margin-bottom:5px">Chave Privada</label>
+        <input type="password" id="m-nkey" placeholder="Sua chave privada..." style="width:100%;background:#111;border:1px solid #2a2a2a;border-radius:8px;color:#f0f0f0;padding:10px 14px;font-size:13px;outline:none"></div>
+      <button onclick="mintNFT()" style="background:var(--acc);color:#fff;border:none;border-radius:9px;padding:14px;font-size:14px;font-weight:800;cursor:pointer;margin-top:4px">🎨 Mintar NFT Grátis</button>
+      <div id="m-result" style="display:none;background:#0d2a0d;border:1px solid #00e67644;border-radius:8px;padding:12px;font-size:12px;line-height:1.7"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let allNFTs = [];
+let filtroCol = "todos";
+
+async function load() {
+  const [nfts, stats] = await Promise.all([
+    fetch("/api/nfts").then(r=>r.json()).catch(()=>[]),
+    fetch("/api/stats").then(r=>r.json()).catch(()=>({}))
+  ]);
+  allNFTs = nfts;
+  document.getElementById("s-nfts").textContent = nfts.length;
+  const cols = [...new Set(nfts.map(n=>n.collection||"DEFAULT"))];
+  const donos = [...new Set(nfts.map(n=>n.owner))];
+  document.getElementById("s-col").textContent = cols.length;
+  document.getElementById("s-donos").textContent = donos.length;
+  // Filtros de coleção
+  document.getElementById("col-filters").innerHTML = cols.map(c=>
+    `<button class="filter-btn" onclick="setFiltro('${c}',this)">${c}</button>`).join("");
+  renderGrid(nfts);
+}
+
+function setFiltro(col, btn) {
+  filtroCol = col;
+  document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+  if(btn) btn.classList.add("active");
+  filtrar();
+}
+
+function filtrar() {
+  const q = document.getElementById("search").value.toLowerCase();
+  const filtered = allNFTs.filter(n => {
+    const matchCol = filtroCol==="todos" || (n.collection||"DEFAULT")===filtroCol;
+    const matchQ = !q || n.name?.toLowerCase().includes(q) || (n.collection||"").toLowerCase().includes(q);
+    return matchCol && matchQ;
+  });
+  renderGrid(filtered);
+}
+
+function renderGrid(nfts) {
+  const g = document.getElementById("nft-grid");
+  if (!nfts.length) {
+    g.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="icon">🎨</div><h3>Nenhum NFT encontrado</h3><p style="color:var(--mut);margin-top:8px">Crie o primeiro NFT da CEREBRO!</p></div>`;
+    return;
+  }
+  g.innerHTML = nfts.map(n => `
+  <div class="nft-card" onclick='showDetail(${JSON.stringify(n)})'>
+    <div class="nft-img">
+      ${n.imageUrl ? `<img src="${n.imageUrl}" alt="${n.name}" onerror="this.parentNode.textContent='🖼️'">` : "🖼️"}
+      <div class="nft-badge">CBRC-721</div>
+    </div>
+    <div class="nft-body">
+      <div class="nft-col">${n.collection||"DEFAULT"}</div>
+      <div class="nft-name">${n.name}</div>
+      <div class="nft-row">
+        <div class="nft-owner">${(n.owner||"").slice(0,10)}…</div>
+        <div class="nft-price">Grátis</div>
+      </div>
+    </div>
+  </div>`).join("");
+}
+
+function showDetail(n) {
+  document.getElementById("m-name").textContent = n.name;
+  document.getElementById("m-content").innerHTML = `
+    <div class="nft-big">${n.imageUrl ? `<img src="${n.imageUrl}" onerror="this.textContent='🖼️'">` : "🖼️"}</div>
+    <div class="detail-row"><span style="color:var(--mut)">Coleção</span><span>${n.collection||"DEFAULT"}</span></div>
+    <div class="detail-row"><span style="color:var(--mut)">Descrição</span><span>${n.description||"—"}</span></div>
+    <div class="detail-row"><span style="color:var(--mut)">Token ID</span><span style="font-family:monospace;font-size:11px;color:var(--acc)">${n.tokenId}</span></div>
+    <div class="detail-row"><span style="color:var(--mut)">Dono</span><span style="font-family:monospace;font-size:10px">${(n.owner||"").slice(0,30)}…</span></div>
+    <div class="detail-row"><span style="color:var(--mut)">Bloco</span><span>#${n.mintBlock||"—"}</span></div>
+    <div style="margin-top:14px">
+      <button class="btn btn-out" style="width:100%" onclick="document.getElementById('modal-mint').classList.add('open');document.getElementById('modal-detail').classList.remove('open')">+ Criar NFT similar</button>
+    </div>`;
+  document.getElementById("modal-detail").classList.add("open");
+}
+
+async function mintNFT() {
+  const key = document.getElementById("m-nkey").value.trim();
+  const name = document.getElementById("m-nname").value.trim();
+  const col = document.getElementById("m-ncol").value.trim();
+  const desc = document.getElementById("m-ndesc").value.trim();
+  const img = document.getElementById("m-nimg").value.trim();
+  if (!key || !name) { alert("Nome e chave privada são obrigatórios"); return; }
+  const r = await fetch("/api/nft/mint", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({name,description:desc,imageUrl:img,collection:col||"CerebroNFTs",privateKey:key}) }).then(r=>r.json()).catch(e=>({erro:e.message}));
+  const el = document.getElementById("m-result");
+  el.style.display = "block";
+  if (r.ok) { el.innerHTML = `✅ NFT <b>${name}</b> criado!<br>Token ID: <code>${r.tokenId}</code>`; load(); }
+  else { el.style.background="#2a0d0d"; el.style.borderColor="#ff174444"; el.textContent = "❌ "+r.erro; }
+}
+
+load();
+setInterval(load, 15000);
+</script>
+</body>
+</html>

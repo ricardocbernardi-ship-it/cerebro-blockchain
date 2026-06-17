@@ -2,168 +2,325 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CEREBRO — Blockchain Educacional estilo Bitcoin</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="CEREBRO Blockchain — Smart Contracts em JavaScript, NFTs nativos, DEX AMM e Staking. A blockchain mais acessível do mundo.">
+<meta property="og:title" content="CEREBRO Blockchain — v3.0">
+<meta property="og:description" content="Smart Contracts em JavaScript. NFTs. DEX. Staking. Grátis.">
+<meta property="og:type" content="website">
+<title>CEREBRO Blockchain — v3.0</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:#0a0a0f; color:#e0e0e0; font-family:'Segoe UI',sans-serif; min-height:100vh; }
-
-  .header {
-    background:linear-gradient(135deg,#0d1117 0%,#1a0a2e 50%,#0d1117 100%);
-    border-bottom:2px solid #f7931a;
-    padding:40px 24px;
-    text-align:center;
-  }
-  .logo { font-size:64px; margin-bottom:8px; }
-  .title { font-size:40px; font-weight:900; color:#f7931a; letter-spacing:3px; }
-  .subtitle { font-size:16px; color:#888; margin-top:8px; }
-  .badge {
-    display:inline-block; background:#f7931a22; border:1px solid #f7931a;
-    color:#f7931a; padding:5px 18px; border-radius:20px; font-size:12px;
-    font-weight:700; margin-top:14px; letter-spacing:1px;
-  }
-
-  .container { max-width:1000px; margin:0 auto; padding:32px 20px; }
-
-  .aviso {
-    background:#2a1a0d; border:2px solid #f7931a; border-radius:12px;
-    padding:20px 24px; margin-bottom:32px; font-size:14px; line-height:1.6;
-  }
-  .aviso b { color:#f7931a; }
-
-  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; margin-bottom:32px; }
-
-  .card {
-    background:#111118; border:1px solid #222233;
-    border-radius:12px; padding:24px;
-  }
-  .card-title {
-    font-size:11px; text-transform:uppercase; letter-spacing:2px;
-    color:#f7931a; margin-bottom:14px; display:flex; align-items:center; gap:8px;
-  }
-  .card-title::before { content:''; display:block; width:12px; height:2px; background:#f7931a; }
-  .card p { font-size:14px; color:#bbb; line-height:1.7; }
-
-  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:32px; }
-  .stat {
-    background:#111118; border:1px solid #222233; border-radius:10px;
-    padding:16px; text-align:center;
-  }
-  .stat-label { font-size:11px; color:#666; text-transform:uppercase; letter-spacing:1px; }
-  .stat-value { font-size:22px; font-weight:900; color:#f7931a; margin-top:6px; }
-
-  .roadmap { background:#111118; border:1px solid #222233; border-radius:12px; padding:24px; margin-bottom:32px; }
-  .roadmap-title { font-size:11px; text-transform:uppercase; letter-spacing:2px; color:#f7931a; margin-bottom:18px; }
-  .step { display:flex; gap:14px; padding:12px 0; border-bottom:1px solid #1a1a2a; }
-  .step:last-child { border-bottom:none; }
-  .step-num {
-    width:26px; height:26px; border-radius:50%; background:#f7931a22; border:1px solid #f7931a;
-    color:#f7931a; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;
-    flex-shrink:0;
-  }
-  .step-text { font-size:14px; color:#ccc; line-height:1.5; }
-  .step-text b { color:#e0e0e0; }
-
-  .cmds { background:#111118; border:1px solid #222233; border-radius:12px; padding:24px; margin-bottom:32px; }
-  .cmds-title { font-size:11px; text-transform:uppercase; letter-spacing:2px; color:#f7931a; margin-bottom:16px; }
-  .cmd-row { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:#0d0d15; border-radius:8px; margin-bottom:8px; }
-  .cmd-name { font-family:monospace; color:#4ecdc4; font-size:13px; }
-  .cmd-desc { color:#777; font-size:12px; }
-
-  .footer { text-align:center; padding:32px; color:#444; font-size:12px; }
+:root{--acc:#a259ff;--grn:#00e676;--bg:#060608;--bg2:#0e0e12;--bg3:#16161c;--bd:#2a2a38;--txt:#f0f0f8}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.6}
+a{color:var(--acc);text-decoration:none}
+a:hover{text-decoration:underline}
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:#060608ee;backdrop-filter:blur(12px);border-bottom:1px solid var(--bd);padding:0 32px;display:flex;align-items:center;height:58px;gap:24px}
+.n-logo{font-size:17px;font-weight:900;color:var(--acc);letter-spacing:.5px;white-space:nowrap}
+.n-links{display:flex;gap:20px;margin-left:auto;align-items:center}
+.n-links a{font-size:13px;color:#aaa;font-weight:500}
+.n-links a:hover{color:var(--txt);text-decoration:none}
+.n-btn{padding:7px 18px;background:var(--acc);color:#fff;border-radius:8px;font-size:13px;font-weight:700}
+.n-btn:hover{opacity:.9;text-decoration:none}
+/* HERO */
+.hero{text-align:center;padding:100px 20px 80px;background:radial-gradient(ellipse 80% 60% at 50% -10%,#1a0d2e,transparent)}
+.hero-badge{display:inline-block;padding:5px 16px;border:1px solid var(--acc);border-radius:20px;font-size:12px;font-weight:700;color:var(--acc);letter-spacing:1px;margin-bottom:24px}
+.hero h1{font-size:clamp(36px,7vw,72px);font-weight:900;line-height:1.1;margin-bottom:20px}
+.hero h1 em{color:var(--acc);font-style:normal}
+.hero p{font-size:18px;color:#aaa;max-width:600px;margin:0 auto 36px}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-main{padding:14px 32px;background:var(--acc);color:#fff;border-radius:10px;font-size:15px;font-weight:800}
+.btn-out{padding:14px 32px;border:1px solid var(--bd);color:var(--txt);border-radius:10px;font-size:15px;font-weight:600}
+.btn-main:hover,.btn-out:hover{opacity:.85;text-decoration:none}
+.hero-stats{display:flex;gap:48px;justify-content:center;margin-top:60px;flex-wrap:wrap}
+.hs{text-align:center}
+.hs-v{font-size:32px;font-weight:900;color:var(--acc)}
+.hs-l{font-size:12px;color:#666;margin-top:2px;text-transform:uppercase;letter-spacing:.8px}
+/* FEATURES */
+.section{padding:80px 24px}
+.sec-label{text-align:center;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--acc);margin-bottom:12px}
+.sec-title{text-align:center;font-size:clamp(24px,4vw,40px);font-weight:900;margin-bottom:12px}
+.sec-sub{text-align:center;font-size:16px;color:#888;max-width:540px;margin:0 auto 48px}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;max-width:1100px;margin:0 auto}
+.feat{background:var(--bg2);border:1px solid var(--bd);border-radius:16px;padding:28px}
+.feat-icon{font-size:32px;margin-bottom:14px}
+.feat h3{font-size:16px;font-weight:800;margin-bottom:8px}
+.feat p{font-size:13px;color:#888;line-height:1.6}
+/* CODE DEMO */
+.code-section{padding:80px 24px;background:var(--bg2);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+.code-wrap{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.code-block{background:#08080c;border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+.code-head{padding:10px 16px;border-bottom:1px solid var(--bd);font-size:11px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%}
+.code-body{padding:16px;font-family:'Courier New',monospace;font-size:12px;line-height:1.7;color:#b0c0e0}
+.kw{color:#a259ff}.fn{color:#61dafb}.str{color:#a8ff78}.cmt{color:#3a4a5a}.num{color:#ffd54f}
+/* COMPARE */
+.compare-table{max-width:900px;margin:0 auto;overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{padding:12px 16px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:#555;border-bottom:1px solid var(--bd)}
+td{padding:12px 16px;border-bottom:1px solid #16161c;font-size:14px}
+tr:last-child td{border:none}
+.ck{color:var(--grn);font-weight:900}
+.cx{color:#444}
+.hi td{background:#0e0a18;font-weight:700}
+.hi td:first-child{color:var(--acc)}
+/* ECOSYSTEM */
+.eco-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;max-width:1000px;margin:0 auto}
+.eco{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:20px;text-align:center}
+.eco-icon{font-size:28px;margin-bottom:8px}
+.eco-name{font-size:14px;font-weight:700;margin-bottom:4px}
+.eco-desc{font-size:12px;color:#666}
+/* ROADMAP */
+.rm-list{max-width:700px;margin:0 auto;position:relative}
+.rm-list::before{content:'';position:absolute;left:20px;top:0;bottom:0;width:2px;background:var(--bd)}
+.rm{display:flex;gap:20px;margin-bottom:24px;position:relative}
+.rm-dot{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;border:2px solid var(--bd);background:var(--bg);z-index:1}
+.rm-dot.done{border-color:var(--grn);background:#0d1a0d}
+.rm-dot.curr{border-color:var(--acc);background:#1a0d2e}
+.rm-body{padding-top:8px}
+.rm-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#555;margin-bottom:3px}
+.rm-title{font-size:15px;font-weight:800;margin-bottom:4px}
+.rm-items{font-size:12px;color:#888;line-height:1.7}
+/* CTA */
+.cta{padding:80px 24px;text-align:center;background:radial-gradient(ellipse 70% 80% at 50% 100%,#1a0d2e,transparent)}
+.cta h2{font-size:clamp(28px,5vw,48px);font-weight:900;margin-bottom:16px}
+.cta p{font-size:16px;color:#888;max-width:500px;margin:0 auto 32px}
+/* FOOTER */
+footer{background:var(--bg2);border-top:1px solid var(--bd);padding:24px;text-align:center;font-size:12px;color:#555}
+footer span{color:#888}
+@media(max-width:700px){.code-wrap{grid-template-columns:1fr}.n-links a:not(.n-btn){display:none}.hero-stats{gap:24px}}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="logo">🧠</div>
-  <div class="title">CEREBRO</div>
-  <div class="subtitle">Blockchain educacional — mesma estrutura do Bitcoin, rodando no seu computador</div>
-  <div class="badge">⚠️ SEM VALOR REAL · USO EDUCACIONAL</div>
-</div>
-
-<div class="container">
-
-  <div class="aviso">
-    <b>O que é isto:</b> CEREBRO é uma blockchain própria, criada para ensinar como o Bitcoin
-    funciona por dentro. Roda localmente no seu computador (ou entre computadores na sua rede),
-    usa <b>proof-of-work</b> de verdade, <b>halving</b> de recompensa e <b>assinatura digital</b>
-    igual ao Bitcoin real. <b>Não tem valor monetário</b>, não está listado em nenhuma exchange
-    e não existe fora de onde você rodar.
+<nav>
+  <div class="n-logo">🧠 CEREBRO</div>
+  <div class="n-links">
+    <a href="#features">Features</a>
+    <a href="#compare">Comparar</a>
+    <a href="#ecosystem">Ecosystem</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="https://github.com/ricardocbernardi-ship-it/cerebro-blockchain" target="_blank">GitHub</a>
+    <a href="#start" class="n-btn">Começar →</a>
   </div>
+</nav>
 
-  <div class="stats">
-    <div class="stat"><div class="stat-label">Recompensa inicial</div><div class="stat-value">50</div></div>
-    <div class="stat"><div class="stat-label">Halving</div><div class="stat-value">10 blocos</div></div>
-    <div class="stat"><div class="stat-label">Supply máximo</div><div class="stat-value">21.000.000</div></div>
-    <div class="stat"><div class="stat-label">Curva de chave</div><div class="stat-value">secp256k1</div></div>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">✨ CEREBRO v3.0 — MAINNET LIVE</div>
+  <h1>A Blockchain que fala<br><em>JavaScript</em></h1>
+  <p>Smart Contracts em JS. NFTs nativos. DEX AMM. Staking. Tudo em uma blockchain. Tudo grátis.</p>
+  <div class="hero-btns">
+    <a href="https://github.com/ricardocbernardi-ship-it/cerebro-blockchain" target="_blank" class="btn-main">🚀 Ver no GitHub</a>
+    <a href="#start" class="btn-out">📖 Começar em 5 min</a>
   </div>
-
-  <div class="grid">
-    <div class="card">
-      <div class="card-title">Proof of Work</div>
-      <p>Cada bloco só é aceito depois que o computador encontra um hash SHA-256 começando com
-      vários zeros — testando milhares ou milhões de combinações. É o mesmo princípio que torna
-      o Bitcoin caro de atacar.</p>
-    </div>
-    <div class="card">
-      <div class="card-title">Halving</div>
-      <p>A recompensa de mineração cai pela metade periodicamente (aqui, a cada 10 blocos; no
-      Bitcoin real, a cada 210.000). Isso cria escassez programada — quanto mais tempo passa,
-      menos moeda nova é criada.</p>
-    </div>
-    <div class="card">
-      <div class="card-title">Rede P2P</div>
-      <p>Vários nós podem se conectar, trocar blocos e transações entre si. Quando um nó minera,
-      transmite para os outros — e a regra "cadeia mais longa válida vence" resolve qualquer
-      divergência, igual o consenso do Bitcoin.</p>
-    </div>
-    <div class="card">
-      <div class="card-title">Assinatura digital</div>
-      <p>Carteiras usam a mesma curva criptográfica do Bitcoin (secp256k1). Só quem tem a chave
-      privada pode assinar e gastar o saldo — a rede confere a assinatura antes de aceitar.</p>
-    </div>
+  <div class="hero-stats">
+    <div class="hs"><div class="hs-v">21M</div><div class="hs-l">Supply CBR</div></div>
+    <div class="hs"><div class="hs-v">0ms</div><div class="hs-l">Finalidade</div></div>
+    <div class="hs"><div class="hs-v">$0</div><div class="hs-l">Taxa de Gas</div></div>
+    <div class="hs"><div class="hs-v">JS</div><div class="hs-l">Linguagem</div></div>
   </div>
+</section>
 
-  <div class="cmds">
-    <div class="cmds-title">Como rodar</div>
-    <div class="cmd-row"><span class="cmd-name">INSTALAR.bat</span><span class="cmd-desc">instala dependências (1x)</span></div>
-    <div class="cmd-row"><span class="cmd-name">1-CRIAR-CARTEIRA.bat</span><span class="cmd-desc">gera carteira nova</span></div>
-    <div class="cmd-row"><span class="cmd-name">2-MINERAR.bat</span><span class="cmd-desc">minera um bloco</span></div>
-    <div class="cmd-row"><span class="cmd-name">3-ENVIAR.bat</span><span class="cmd-desc">envia moedas assinadas</span></div>
-    <div class="cmd-row"><span class="cmd-name">7-NO-A.bat / 8-NO-B.bat</span><span class="cmd-desc">sobe 2 nós conectados em rede</span></div>
-  </div>
-
-  <div class="roadmap">
-    <div class="roadmap-title">O que falta pra ser "conhecido igual Bitcoin" (de verdade)</div>
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-text"><b>Abrir o código</b> — publicar num repositório público (GitHub),
-      pra qualquer pessoa poder ler, baixar e rodar seu próprio nó.</div>
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="sec-label">Por que CEREBRO?</div>
+  <div class="sec-title">Tudo que você precisa. Nativo.</div>
+  <div class="sec-sub">Sem extensões. Sem contratos externos. DEX, NFTs e Staking fazem parte do protocolo base.</div>
+  <div class="feat-grid">
+    <div class="feat">
+      <div class="feat-icon">📜</div>
+      <h3>Smart Contracts em JavaScript</h3>
+      <p>Escreva contratos com o JS que você já sabe. VM sandbox seguro. Deploy em segundos. Sem Solidity, sem Rust.</p>
     </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-text"><b>Gente de fora rodando nós de verdade</b> — hoje a rede existe só
-      no seu PC. Descentralização real exige pessoas diferentes, em máquinas diferentes,
-      confiando o suficiente para participar.</div>
+    <div class="feat">
+      <div class="feat-icon">🖼️</div>
+      <h3>NFTs CBRC-721 Nativos</h3>
+      <p>Mint, transfer e marketplace de NFTs integrados no protocolo. Sem contrato ERC-721 externo. Custo zero.</p>
     </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-text"><b>Documentação clara</b> — explicar o que torna o projeto
-      interessante, igual o whitepaper do Bitcoin fez em 2008.</div>
+    <div class="feat">
+      <div class="feat-icon">💱</div>
+      <h3>DEX AMM Nativo</h3>
+      <p>Troque tokens com fórmula x*y=k (Uniswap-style). Pools de liquidez nativos. 0.3% de taxa para LPs.</p>
     </div>
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-text"><b>Tempo e confiança</b> — isso não se acelera. É o que sustenta
-      o valor de qualquer rede descentralizada, e não vem de um comando ou script.</div>
+    <div class="feat">
+      <div class="feat-icon">🪙</div>
+      <h3>Tokens CBRC-20</h3>
+      <p>Crie tokens fungíveis com nome, símbolo, supply e decimais. Deploy em uma chamada de API.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🏦</div>
+      <h3>Staking Nativo</h3>
+      <p>Bloqueie CBR e ganhe recompensas. Direto no protocolo, sem contrato externo de staking.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">⚡</div>
+      <h3>Finalidade Instantânea</h3>
+      <p>Modo instant: cada transação é minerada imediatamente. Confirmação em menos de 1 segundo.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🌐</div>
+      <h3>API REST + WebSocket</h3>
+      <p>30+ endpoints REST e WebSocket para atualizações em tempo real. Integre qualquer app em minutos.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🔒</div>
+      <h3>Segurança Bitcoin-Grade</h3>
+      <p>PoW SHA-256. Criptografia secp256k1. Assinaturas ECDSA. Mesmo algoritmo do Bitcoin.</p>
     </div>
   </div>
+</section>
 
-</div>
+<!-- CODE DEMO -->
+<section class="code-section">
+  <div class="sec-label">Código</div>
+  <div class="sec-title" style="text-align:center;font-size:clamp(22px,3.5vw,36px);font-weight:900;margin-bottom:12px">Ver para crer</div>
+  <div class="sec-sub">Duas chamadas. Token criado e NFT mintado.</div>
+  <div class="code-wrap">
+    <div class="code-block">
+      <div class="code-head"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>&nbsp;Deploy Token CBRC-20</div>
+      <div class="code-body"><span class="cmt">// SDK cerebro.js</span>
+<span class="kw">const</span> cerebro = <span class="fn">require</span>(<span class="str">'cerebro'</span>);
 
-<div class="footer">
-  🧠 CEREBRO — projeto educacional, sem valor real, sem exchange, sem garantias.
-</div>
+<span class="cmt">// Criar token em 1 linha</span>
+<span class="kw">const</span> token = <span class="kw">await</span> cerebro.<span class="fn">deployToken</span>(
+  <span class="str">'MeuToken'</span>,
+  <span class="str">'MTK'</span>,
+  <span class="num">1000000</span>,
+  <span class="num">18</span>,
+  privateKey
+);
+
+<span class="cmt">// Resultado instantâneo</span>
+console.<span class="fn">log</span>(token.symbol); <span class="cmt">// MTK</span>
+console.<span class="fn">log</span>(token.supply); <span class="cmt">// 1000000</span></div>
+    </div>
+    <div class="code-block">
+      <div class="code-head"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>&nbsp;Smart Contract em JS</div>
+      <div class="code-body"><span class="cmt">// Contrato de votação — JS puro</span>
+<span class="kw">function</span> <span class="fn">votar</span>(candidato) {
+  <span class="kw">const</span> v = state.votos || {};
+  v[candidato] = (v[candidato]||<span class="num">0</span>)+<span class="num">1</span>;
+  state.votos = v;
+  <span class="fn">emit</span>(<span class="str">'Voto'</span>, {candidato});
+  <span class="kw">return</span> v;
+}
+
+<span class="cmt">// Deploy</span>
+<span class="kw">await</span> cerebro.<span class="fn">deployContrato</span>(
+  <span class="str">'Votacao'</span>,
+  sourceCode,
+  privateKey
+);</div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARE -->
+<section class="section" id="compare">
+  <div class="sec-label">Comparação</div>
+  <div class="sec-title">CEREBRO vs. Concorrentes</div>
+  <div class="sec-sub">Mais features. Zero custo. Linguagem que você já usa.</div>
+  <div class="compare-table">
+    <table>
+      <tr><th>Feature</th><th>Ethereum</th><th>Solana</th><th>Polygon</th><th>🧠 CEREBRO</th></tr>
+      <tr><td>Linguagem</td><td class="cx">Solidity</td><td class="cx">Rust</td><td class="cx">Solidity</td><td class="ck">JavaScript ✓</td></tr>
+      <tr><td>Gas médio</td><td class="cx">$5–$100</td><td class="cx">$0.0003</td><td class="cx">$0.01</td><td class="ck">Grátis ✓</td></tr>
+      <tr><td>DEX nativo</td><td class="cx">✗</td><td class="cx">✗</td><td class="cx">✗</td><td class="ck">✓</td></tr>
+      <tr><td>NFT nativo</td><td class="cx">✗</td><td class="cx">Metaplex*</td><td class="cx">✗</td><td class="ck">✓</td></tr>
+      <tr><td>Staking nativo</td><td class="cx">✗</td><td class="cx">Validators</td><td class="cx">✗</td><td class="ck">✓</td></tr>
+      <tr class="hi"><td>Supply máx.</td><td>∞</td><td>∞</td><td>∞</td><td>21M CBR</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ECOSYSTEM -->
+<section class="section" id="ecosystem" style="background:var(--bg2);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)">
+  <div class="sec-label">Ecossistema</div>
+  <div class="sec-title">Ferramentas Incluídas</div>
+  <div class="sec-sub">Tudo que você precisa para construir já vem na caixa.</div>
+  <div class="eco-grid">
+    <div class="eco"><div class="eco-icon">🔍</div><div class="eco-name">Explorer</div><div class="eco-desc">Blocos, transações, tokens, NFTs e contratos em tempo real</div></div>
+    <div class="eco"><div class="eco-icon">👛</div><div class="eco-name">Wallet</div><div class="eco-desc">Carteira web completa: envio, tokens, NFTs, DEX, staking</div></div>
+    <div class="eco"><div class="eco-icon">🖼️</div><div class="eco-name">Marketplace</div><div class="eco-desc">Crie e explore NFTs CBRC-721 com galeria e modal</div></div>
+    <div class="eco"><div class="eco-icon">📝</div><div class="eco-name">Templates</div><div class="eco-desc">8 smart contracts prontos: DAO, loteria, escrow, multisig...</div></div>
+    <div class="eco"><div class="eco-icon">📦</div><div class="eco-name">SDK JavaScript</div><div class="eco-desc">cerebro.js com todos os métodos — equivalente ao ethers.js</div></div>
+    <div class="eco"><div class="eco-icon">⛏️</div><div class="eco-name">Auto-Miner</div><div class="eco-desc">Daemon PM2 que minera automaticamente quando há transações</div></div>
+    <div class="eco"><div class="eco-icon">🚀</div><div class="eco-name">Faucet</div><div class="eco-desc">Receba CBR grátis para testar a rede em segundos</div></div>
+    <div class="eco"><div class="eco-icon">📄</div><div class="eco-name">Whitepaper</div><div class="eco-desc">Documentação técnica completa com arquitetura e economia</div></div>
+  </div>
+</section>
+
+<!-- QUICKSTART -->
+<section class="section" id="start">
+  <div class="sec-label">Começar</div>
+  <div class="sec-title">Rodando em 3 comandos</div>
+  <div class="code-wrap" style="max-width:700px;grid-template-columns:1fr">
+    <div class="code-block" style="max-width:700px;margin:0 auto">
+      <div class="code-head"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>&nbsp;Terminal</div>
+      <div class="code-body"><span class="cmt"># 1. Clone o repositório</span>
+git clone https://github.com/ricardocbernardi-ship-it/cerebro-blockchain
+<span class="kw">cd</span> cerebro-blockchain
+
+<span class="cmt"># 2. Instale dependências</span>
+npm install
+
+<span class="cmt"># 3. Inicie a blockchain</span>
+node no-completo.js
+
+<span class="cmt"># Explorer disponível em:</span>
+<span class="str">http://localhost:3001/explorer.html</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section class="section" id="roadmap" style="background:var(--bg2);border-top:1px solid var(--bd)">
+  <div class="sec-label">Roadmap</div>
+  <div class="sec-title">O que está por vir</div>
+  <div style="max-width:700px;margin:40px auto 0">
+    <div class="rm">
+      <div class="rm-dot done">✓</div>
+      <div class="rm-body"><div class="rm-label">Fase 1 — Completo</div><div class="rm-title">Core Protocol</div><div class="rm-items">PoW SHA-256 · Carteiras secp256k1 · API REST · Persistência</div></div>
+    </div>
+    <div class="rm">
+      <div class="rm-dot done">✓</div>
+      <div class="rm-body"><div class="rm-label">Fase 2 — Completo</div><div class="rm-title">Token Standards</div><div class="rm-items">CBRC-20 tokens · CBRC-721 NFTs · Explorer web</div></div>
+    </div>
+    <div class="rm">
+      <div class="rm-dot done">✓</div>
+      <div class="rm-body"><div class="rm-label">Fase 3 — Completo</div><div class="rm-title">DeFi Layer</div><div class="rm-items">Smart Contracts JS · DEX AMM · Staking nativo · WebSocket</div></div>
+    </div>
+    <div class="rm">
+      <div class="rm-dot curr">→</div>
+      <div class="rm-body"><div class="rm-label">Fase 4 — Em Andamento</div><div class="rm-title">Ecossistema</div><div class="rm-items">SDK cerebro.js · NFT Marketplace · Templates de contratos · Whitepaper</div></div>
+    </div>
+    <div class="rm">
+      <div class="rm-dot" style="color:#ffd54f">◎</div>
+      <div class="rm-body"><div class="rm-label">Fase 5 — Planejado</div><div class="rm-title">Rede Pública</div><div class="rm-items">P2P multi-nó · DNS seed · Render.com 24/7 · Listagem em diretórios</div></div>
+    </div>
+    <div class="rm">
+      <div class="rm-dot">○</div>
+      <div class="rm-body"><div class="rm-label">Fase 6 — Futuro</div><div class="rm-title">Bridge & Exchange</div><div class="rm-items">Bridge Polygon↔CEREBRO · npm publish cerebro.js · Exchange listing</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Pronto para construir<br>na CEREBRO?</h2>
+  <p>A blockchain mais amigável para desenvolvedores JavaScript. Gratuita, open source e sem barreiras.</p>
+  <div class="hero-btns">
+    <a href="https://github.com/ricardocbernardi-ship-it/cerebro-blockchain" target="_blank" class="btn-main">⭐ Star no GitHub</a>
+    <a href="https://github.com/ricardocbernardi-ship-it/cerebro-blockchain/blob/main/README.md" target="_blank" class="btn-out">📖 Documentação</a>
+  </div>
+</section>
+
+<footer>
+  <p>🧠 <span>CEREBRO Blockchain v3.0</span> — Criado por <span>Ricardo C. Bernardi</span> — Open Source MIT</p>
+  <p style="margin-top:6px"><a href="https://github.com/ricardocbernardi-ship-it/cerebro-blockchain" target="_blank">GitHub</a> · Token: <span>CBR</span> · Supply: <span>21.000.000</span></p>
+</footer>
 
 </body>
 </html>

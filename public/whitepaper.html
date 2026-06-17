@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CEREBRO Whitepaper v3.0</title>
+<style>
+:root{--acc:#a259ff;--grn:#00e676;--bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;--bd:#2a2a2a;--txt:#f0f0f0;--mut:#888}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);line-height:1.8}
+nav{display:flex;align-items:center;gap:16px;padding:14px 24px;background:var(--bg2);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100}
+.logo{font-size:18px;font-weight:900;color:var(--acc)}
+nav a{color:var(--mut);text-decoration:none;font-size:13px}
+nav a:hover{color:var(--txt)}
+.container{max-width:860px;margin:0 auto;padding:48px 24px 80px}
+h1{font-size:40px;font-weight:900;margin-bottom:8px;color:var(--acc)}
+.subtitle{font-size:15px;color:var(--mut);margin-bottom:8px}
+.meta{font-size:12px;color:var(--mut);margin-bottom:48px;padding-bottom:24px;border-bottom:1px solid var(--bd)}
+.meta span{color:var(--txt)}
+h2{font-size:22px;font-weight:800;margin:48px 0 16px;color:var(--txt);padding-top:8px}
+h3{font-size:16px;font-weight:700;margin:24px 0 10px;color:var(--acc)}
+p{margin-bottom:14px;font-size:15px;color:#ccc}
+.toc{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:20px 24px;margin-bottom:40px}
+.toc h3{color:var(--txt);margin-top:0;font-size:14px;text-transform:uppercase;letter-spacing:.8px}
+.toc ol{padding-left:20px;margin-top:10px}
+.toc li{margin-bottom:4px}
+.toc a{color:var(--acc);text-decoration:none;font-size:13px}
+.toc a:hover{text-decoration:underline}
+.callout{background:#1a1225;border-left:3px solid var(--acc);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font-size:14px}
+.code{background:#0d0d0d;border:1px solid var(--bd);border-radius:8px;padding:16px;font-family:monospace;font-size:13px;overflow-x:auto;margin:16px 0;color:#b0b0ff;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th{background:var(--bg3);padding:10px 14px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--mut)}
+td{padding:10px 14px;border-bottom:1px solid var(--bd);color:#ccc}
+tr:hover td{background:#ffffff05}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;margin-right:4px}
+.b-acc{background:#1a1225;color:var(--acc);border:1px solid var(--acc)}
+.b-grn{background:#0d1a0d;color:var(--grn);border:1px solid var(--grn)}
+.compare{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0}
+.comp-card{background:var(--bg3);border:1px solid var(--bd);border-radius:10px;padding:16px}
+.comp-name{font-weight:800;margin-bottom:10px;font-size:14px}
+.comp-row{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid #1a1a1a;color:#aaa}
+.comp-row:last-child{border:none}
+.better{color:var(--grn)}.same{color:var(--mut)}.worse{color:#ff7043}
+@media(max-width:600px){.compare{grid-template-columns:1fr}.container{padding:24px 16px}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">🧠 CEREBRO</div>
+  <a href="/">Home</a>
+  <a href="/explorer.html">Explorer</a>
+  <a href="/wallet.html">Wallet</a>
+  <a href="/marketplace.html">NFTs</a>
+</nav>
+<div class="container">
+  <h1>CEREBRO Whitepaper</h1>
+  <div class="subtitle">Blockchain de Nova Geração com Smart Contracts, NFTs, DEX e Staking Nativo</div>
+  <div class="meta">Versão <span>3.0.0</span> &nbsp;|&nbsp; Data <span>2026</span> &nbsp;|&nbsp; Autor <span>Ricardo C. Bernardi</span> &nbsp;|&nbsp; Símbolo <span>CBR</span> &nbsp;|&nbsp; Rede <span>CEREBRO Mainnet</span></div>
+
+  <div class="toc">
+    <h3>Sumário</h3>
+    <ol>
+      <li><a href="#resumo">Resumo Executivo</a></li>
+      <li><a href="#problema">O Problema</a></li>
+      <li><a href="#solucao">A Solução CEREBRO</a></li>
+      <li><a href="#arquitetura">Arquitetura Técnica</a></li>
+      <li><a href="#consenso">Mecanismo de Consenso</a></li>
+      <li><a href="#tokens">Padrões de Token (CBRC-20 e CBRC-721)</a></li>
+      <li><a href="#contratos">Smart Contracts</a></li>
+      <li><a href="#dex">DEX Nativo (AMM)</a></li>
+      <li><a href="#staking">Staking</a></li>
+      <li><a href="#economia">Economia do Token CBR</a></li>
+      <li><a href="#comparacao">Comparação com Concorrentes</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="#conclusao">Conclusão</a></li>
+    </ol>
+  </div>
+
+  <h2 id="resumo">1. Resumo Executivo</h2>
+  <p>CEREBRO é uma blockchain proof-of-work de nova geração desenvolvida do zero em Node.js. Combina o modelo de segurança do Bitcoin com funcionalidades avançadas como smart contracts JavaScript, NFTs nativos (CBRC-721), tokens fungíveis (CBRC-20), um DEX AMM nativo e staking integrado — tudo em uma única camada.</p>
+  <div class="callout">
+    <strong>Missão:</strong> Criar a blockchain mais acessível do mundo — onde qualquer desenvolvedor JavaScript pode criar tokens, NFTs e contratos inteligentes em minutos, sem aprender Solidity ou Rust.
+  </div>
+  <p>O token nativo <strong>CBR</strong> alimenta toda a economia: paga mineradores, acumula rendimentos no staking, e serve como par base em todos os pools de liquidez do DEX.</p>
+
+  <h2 id="problema">2. O Problema</h2>
+  <p>As blockchains existentes apresentam barreiras significativas:</p>
+  <h3>2.1 Complexidade Técnica</h3>
+  <p>Ethereum exige aprender Solidity. Solana exige Rust e BPF. Polkadot exige Substrate/Rust. A maioria dos desenvolvedores do mundo usa JavaScript — mas nenhuma blockchain principal permite escrever contratos diretamente em JS.</p>
+  <h3>2.2 Taxas de Gas</h3>
+  <p>Ethereum pode cobrar $50-$200 por transação em momentos de pico. Isso exclui casos de uso de baixo valor e cria experiência de usuário ruim para aplicações do mundo real.</p>
+  <h3>2.3 Infraestrutura Fragmentada</h3>
+  <p>DEX, NFTs e staking em Ethereum requerem contratos separados, múltiplas auditorias e integrações complexas. CEREBRO oferece tudo nativo, sem contratos adicionais.</p>
+
+  <h2 id="solucao">3. A Solução CEREBRO</h2>
+  <p>CEREBRO resolve cada problema com uma abordagem radical:</p>
+  <table>
+    <tr><th>Problema</th><th>Solução CEREBRO</th></tr>
+    <tr><td>Linguagem difícil (Solidity/Rust)</td><td>Smart contracts em JavaScript puro</td></tr>
+    <tr><td>Gas caro</td><td>Taxa fixa zero — transações gratuitas</td></tr>
+    <tr><td>DEX como contrato externo</td><td>AMM nativo no protocolo (Blockchain.js)</td></tr>
+    <tr><td>NFTs como padrão externo</td><td>CBRC-721 nativo no protocolo</td></tr>
+    <tr><td>Staking como DeFi externo</td><td>Staking nativo no protocolo</td></tr>
+    <tr><td>Curva de aprendizado alta</td><td>API REST + SDK JS + Explorer web</td></tr>
+  </table>
+
+  <h2 id="arquitetura">4. Arquitetura Técnica</h2>
+  <p>CEREBRO é composta por 5 camadas:</p>
+  <h3>Camada 1 — Protocolo Base</h3>
+  <p><code>Block.js</code> + <code>Blockchain.js</code>: gerenciam a cadeia, mineração PoW, validação e persistência.</p>
+  <h3>Camada 2 — Transações</h3>
+  <p><code>Transaction.js</code>: suporta 11 tipos de transação: TRANSFER, TOKEN_DEPLOY, TOKEN_TRANSFER, NFT_MINT, NFT_TRANSFER, CONTRACT_DEPLOY, CONTRACT_CALL, STAKE, UNSTAKE, SWAP, ADD_LIQUIDITY.</p>
+  <h3>Camada 3 — Estado</h3>
+  <p>Estado computado on-the-fly a partir da cadeia. Mapas internos: <code>tokens</code>, <code>nfts</code>, <code>contracts</code>, <code>liquidity</code>, <code>stakes</code>.</p>
+  <h3>Camada 4 — API REST + WebSocket</h3>
+  <p><code>API.js</code>: 30+ endpoints REST. WebSocket na mesma porta para atualizações em tempo real (blocos, txs, NFTs, eventos de contrato).</p>
+  <h3>Camada 5 — SDK e Ferramentas</h3>
+  <p><code>cerebro.js</code>: SDK JavaScript com todos os métodos. <code>Explorer</code> e <code>Wallet</code> web inclusos.</p>
+
+  <div class="code"># Estrutura de um bloco CEREBRO
+{
+  "index": 42,
+  "timestamp": 1750000000000,
+  "previousHash": "000a3f...",
+  "hash": "0001b7...",
+  "nonce": 12847,
+  "transactions": [
+    {
+      "fromAddress": "04abc...",
+      "toAddress": "04def...",
+      "amount": 100,
+      "type": "TRANSFER",
+      "timestamp": 1750000000001,
+      "signature": "3044..."
+    }
+  ]
+}</div>
+
+  <h2 id="consenso">5. Mecanismo de Consenso</h2>
+  <p>CEREBRO usa <strong>Proof of Work (PoW)</strong> com hash SHA-256, idêntico ao Bitcoin, mas com parâmetros otimizados para finalidade rápida:</p>
+  <table>
+    <tr><th>Parâmetro</th><th>Bitcoin</th><th>CEREBRO</th></tr>
+    <tr><td>Algoritmo</td><td>SHA-256</td><td>SHA-256</td></tr>
+    <tr><td>Dificuldade</td><td>Ajuste dinâmico (~78 zeros)</td><td>2 zeros (ajustável)</td></tr>
+    <tr><td>Tempo de bloco alvo</td><td>10 minutos</td><td>Sub-segundo (instant mode)</td></tr>
+    <tr><td>Halving</td><td>210.000 blocos</td><td>210.000 blocos</td></tr>
+    <tr><td>Recompensa inicial</td><td>50 BTC → 3.125 BTC</td><td>50 CBR → diminui</td></tr>
+    <tr><td>Suprimento máximo</td><td>21.000.000 BTC</td><td>21.000.000 CBR</td></tr>
+  </table>
+  <h3>Modo Instant</h3>
+  <p>Com <code>instantMode = true</code>, cada transação submete automaticamente um bloco. Isso dá finalidade sub-segundo sem sacrificar a estrutura PoW — ideal para dApps interativos.</p>
+
+  <h2 id="tokens">6. Padrões de Token</h2>
+  <h3>CBRC-20 — Tokens Fungíveis</h3>
+  <p>Equivalente ao ERC-20 do Ethereum. Parâmetros: name, symbol, supply, decimals. Deploy via transação TOKEN_DEPLOY. Transfer via TOKEN_TRANSFER.</p>
+  <div class="code"># Deploy CBRC-20
+POST /api/token/deploy
+{
+  "name": "MeuToken",
+  "symbol": "MTK",
+  "supply": 1000000,
+  "decimals": 18,
+  "privateKey": "..."
+}</div>
+
+  <h3>CBRC-721 — NFTs</h3>
+  <p>Equivalente ao ERC-721 do Ethereum. Cada NFT tem tokenId único (UUID), nome, descrição, imageUrl, coleção e dono. Transferência on-chain. Marketplace nativo em <code>/marketplace.html</code>.</p>
+  <div class="code"># Mint CBRC-721
+POST /api/nft/mint
+{
+  "name": "Arte Genesis #1",
+  "description": "Primeiro NFT da CEREBRO",
+  "imageUrl": "https://...",
+  "collection": "Genesis",
+  "privateKey": "..."
+}</div>
+
+  <h2 id="contratos">7. Smart Contracts</h2>
+  <p>CEREBRO é a <strong>única blockchain</strong> que executa smart contracts em <strong>JavaScript puro</strong> via sandbox Node.js (<code>vm.runInNewContext</code>). Sem nova linguagem para aprender.</p>
+  <h3>Como funciona</h3>
+  <p>O código do contrato é armazenado on-chain na transação CONTRACT_DEPLOY. Chamadas via CONTRACT_CALL executam a função especificada em um contexto isolado com acesso à função <code>emit()</code> para eventos.</p>
+  <div class="code">// Exemplo: contrato de votação
+function votar(candidato) {
+  const votos = state.votos || {};
+  votos[candidato] = (votos[candidato] || 0) + 1;
+  state.votos = votos;
+  emit("Voto", { candidato, total: votos[candidato] });
+  return votos;
+}
+
+function resultado() {
+  return state.votos || {};
+}</div>
+
+  <h3>Segurança</h3>
+  <p>O sandbox VM do Node.js isola a execução. O contrato não tem acesso ao filesystem, rede ou módulos do Node — apenas às funções expostas pelo contexto CEREBRO (<code>emit</code>, <code>state</code>).</p>
+
+  <h2 id="dex">8. DEX Nativo (AMM)</h2>
+  <p>CEREBRO tem um <strong>AMM (Automated Market Maker)</strong> nativo no protocolo, sem precisar de contrato externo. Usa a fórmula do Uniswap v1: <code>x * y = k</code>.</p>
+  <h3>Fórmula</h3>
+  <div class="code">// Constant product AMM
+x * y = k
+output = (y * input * 997) / (x * 1000 + input * 997)
+// 0.3% de taxa para provedores de liquidez</div>
+
+  <h3>Operações</h3>
+  <table>
+    <tr><th>Operação</th><th>Endpoint</th><th>Descrição</th></tr>
+    <tr><td>Add Liquidity</td><td>POST /api/liquidity/add</td><td>Deposita tokens no pool</td></tr>
+    <tr><td>Swap</td><td>POST /api/swap</td><td>Troca um token por outro</td></tr>
+    <tr><td>Ver Pools</td><td>GET /api/pools</td><td>Lista todos os pools</td></tr>
+    <tr><td>Ver Pool</td><td>GET /api/pool/CBR/MTK</td><td>Detalhes de um pool</td></tr>
+  </table>
+
+  <h2 id="staking">9. Staking</h2>
+  <p>Usuários podem fazer stake de CBR para ganhar recompensas. O staking é nativo no protocolo — sem contrato externo.</p>
+  <table>
+    <tr><th>Ação</th><th>Transação</th><th>Efeito</th></tr>
+    <tr><td>Stake</td><td>STAKE</td><td>CBR bloqueado, aumento de stake</td></tr>
+    <tr><td>Unstake</td><td>UNSTAKE</td><td>CBR devolvido + recompensas</td></tr>
+    <tr><td>Ver Stake</td><td>GET /api/stake/:addr</td><td>Saldo em stake e recompensas</td></tr>
+  </table>
+
+  <h2 id="economia">10. Economia do Token CBR</h2>
+  <h3>Distribuição</h3>
+  <table>
+    <tr><th>Destinação</th><th>%</th><th>Quantidade</th><th>Fonte</th></tr>
+    <tr><td>Mineradores</td><td>100%</td><td>21.000.000 CBR</td><td>Emissão PoW (halving)</td></tr>
+    <tr><td>Fundador (faucet)</td><td>Bootstrap</td><td>~1.000 CBR</td><td>Faucet inicial</td></tr>
+  </table>
+  <p>Não há pré-venda, não há tokens de fundadores reservados. 100% dos CBR são emitidos pelos mineradores via PoW — igual ao Bitcoin.</p>
+  <h3>Inflação</h3>
+  <p>A recompensa por bloco começa em 50 CBR e é reduzida à metade a cada 210.000 blocos (Bitcoin-like). O suprimento máximo é de 21.000.000 CBR — nunca será ultrapassado.</p>
+
+  <h2 id="comparacao">11. Comparação com Concorrentes</h2>
+  <div class="compare">
+    <div class="comp-card">
+      <div class="comp-name" style="color:#627eea">Ethereum</div>
+      <div class="comp-row"><span>Linguagem</span><span class="same">Solidity</span></div>
+      <div class="comp-row"><span>Gas médio</span><span class="worse">$5–$100</span></div>
+      <div class="comp-row"><span>TPS</span><span class="worse">~15</span></div>
+      <div class="comp-row"><span>JS Contracts</span><span class="worse">Não</span></div>
+      <div class="comp-row"><span>DEX nativo</span><span class="worse">Não</span></div>
+      <div class="comp-row"><span>NFT nativo</span><span class="worse">Não</span></div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-name" style="color:#9945ff">Solana</div>
+      <div class="comp-row"><span>Linguagem</span><span class="same">Rust/C</span></div>
+      <div class="comp-row"><span>Gas médio</span><span class="same">$0.00025</span></div>
+      <div class="comp-row"><span>TPS</span><span class="same">65.000</span></div>
+      <div class="comp-row"><span>JS Contracts</span><span class="worse">Não</span></div>
+      <div class="comp-row"><span>DEX nativo</span><span class="worse">Não</span></div>
+      <div class="comp-row"><span>NFT nativo</span><span class="worse">Não</span></div>
+    </div>
+    <div class="comp-card" style="border-color:var(--acc)">
+      <div class="comp-name" style="color:var(--acc)">🧠 CEREBRO</div>
+      <div class="comp-row"><span>Linguagem</span><span class="better">JavaScript ✓</span></div>
+      <div class="comp-row"><span>Gas médio</span><span class="better">$0 ✓</span></div>
+      <div class="comp-row"><span>TPS</span><span class="better">Instant ✓</span></div>
+      <div class="comp-row"><span>JS Contracts</span><span class="better">Sim ✓</span></div>
+      <div class="comp-row"><span>DEX nativo</span><span class="better">Sim ✓</span></div>
+      <div class="comp-row"><span>NFT nativo</span><span class="better">Sim ✓</span></div>
+    </div>
+  </div>
+
+  <h2 id="roadmap">12. Roadmap</h2>
+  <table>
+    <tr><th>Fase</th><th>Status</th><th>Entregáveis</th></tr>
+    <tr><td>Fase 1 — Core</td><td><span class="badge b-grn">✓ Completo</span></td><td>PoW, Carteiras, Transferências, API REST</td></tr>
+    <tr><td>Fase 2 — Tokens</td><td><span class="badge b-grn">✓ Completo</span></td><td>CBRC-20, CBRC-721, Explorer Web</td></tr>
+    <tr><td>Fase 3 — DeFi</td><td><span class="badge b-grn">✓ Completo</span></td><td>Smart Contracts JS, DEX AMM, Staking</td></tr>
+    <tr><td>Fase 4 — Ecossistema</td><td><span class="badge b-acc">Em andamento</span></td><td>SDK cerebro.js, Marketplace NFT, Whitepaper</td></tr>
+    <tr><td>Fase 5 — Rede</td><td><span class="badge" style="background:#1a1a0d;color:#ffd54f;border:1px solid #ffd54f">Planejado</span></td><td>P2P multi-nó, DNS seed, rede pública</td></tr>
+    <tr><td>Fase 6 — Bridge</td><td><span class="badge" style="background:#1a1a0d;color:#ffd54f;border:1px solid #ffd54f">Planejado</span></td><td>Bridge Polygon↔CEREBRO, exchange listing</td></tr>
+  </table>
+
+  <h2 id="conclusao">13. Conclusão</h2>
+  <p>CEREBRO não é apenas mais uma blockchain. É a primeira blockchain projetada do zero para a comunidade JavaScript — a maior comunidade de desenvolvedores do mundo.</p>
+  <p>Com smart contracts em JavaScript, DEX nativo, NFTs integrados e zero taxas de gas, CEREBRO remove todas as barreiras de entrada para desenvolvimento blockchain.</p>
+  <div class="callout">
+    <strong>Visão:</strong> Em um mundo onde qualquer desenvolvedor web pode criar uma blockchain token em minutos, a inovação em DeFi não terá limites. Esse é o mundo que CEREBRO está construindo.
+  </div>
+  <p style="margin-top:24px;font-size:13px;color:var(--mut)">© 2026 CEREBRO Blockchain — Ricardo C. Bernardi — ricardocardosobernardi@gmail.com<br>Este documento é informativo e não constitui conselho financeiro ou de investimento.</p>
+</div>
+</body>
+</html>

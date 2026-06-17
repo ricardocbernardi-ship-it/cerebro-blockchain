@@ -29,12 +29,13 @@ function carregar() {
   const raw = JSON.parse(fs.readFileSync(ARQUIVO, "utf8"));
   const blockchain = new Blockchain();
 
-  blockchain.difficulty = raw.difficulty;
-  blockchain.baseReward = raw.baseReward;
-  blockchain.halvingInterval = raw.halvingInterval;
-  blockchain.maxSupply = raw.maxSupply;
-  blockchain.pendingTransactions = (raw.pendingTransactions || []).map(reconstruirTx);
+  if (raw.difficulty)       blockchain.difficulty = raw.difficulty;
+  if (raw.baseReward)       blockchain.baseReward = raw.baseReward;
+  if (raw.halvingInterval)  blockchain.halvingInterval = raw.halvingInterval;
+  if (raw.maxSupply)        blockchain.maxSupply = raw.maxSupply;
+  if (raw.instantMode !== undefined) blockchain.instantMode = raw.instantMode;
 
+  blockchain.pendingTransactions = (raw.pendingTransactions || []).map(reconstruirTx);
   blockchain.chain = raw.chain.map((b) => {
     const block = new Block(b.timestamp, (b.transactions || []).map(reconstruirTx), b.previousHash);
     block.nonce = b.nonce;
