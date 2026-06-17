@@ -5,6 +5,8 @@
 [![GitHub](https://img.shields.io/badge/GitHub-cerebro--blockchain-a259ff?style=flat&logo=github)](https://github.com/ricardocbernardi-ship-it/cerebro-blockchain)
 [![Site](https://img.shields.io/badge/Site-GitHub%20Pages-00e676?style=flat)](https://ricardocbernardi-ship-it.github.io/cerebro-blockchain/)
 [![Versão](https://img.shields.io/badge/versão-3.0.0-a259ff?style=flat)](https://github.com/ricardocbernardi-ship-it/cerebro-blockchain)
+[![QuickSwap](https://img.shields.io/badge/QuickSwap-wCBR%2FPOL-00e676?style=flat&logo=ethereum)](https://quickswap.exchange/#/swap?inputCurrency=ETH&outputCurrency=0x208B65B781245AB72419FD6b159c65818ca69C08)
+[![Polygonscan](https://img.shields.io/badge/Polygonscan-wCBR-a259ff?style=flat)](https://polygonscan.com/token/0x208B65B781245AB72419FD6b159c65818ca69C08)
 
 ---
 
@@ -130,6 +132,22 @@ Prontos para usar em `http://localhost:3001/templates.html`:
 - 📜 **DocRegistry** — Registro de documentos
 - ⭐ **PointsSystem** — Programa de fidelidade
 - ⏱️ **ChainTimer** — Agendamentos on-chain
+
+---
+
+## 💱 Token wCBR — Polygon Mainnet
+
+O token **wCBR** (Wrapped CEREBRO) está disponível na Polygon Mainnet e pode ser comprado por qualquer pessoa no QuickSwap.
+
+| Item | Valor |
+|------|-------|
+| Contrato wCBR | [`0x208B65B...69C08`](https://polygonscan.com/token/0x208B65B781245AB72419FD6b159c65818ca69C08) |
+| Par QuickSwap | [`0x4eB7B05...56B2`](https://www.dextools.io/app/polygon/pair-explorer/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2) |
+| Rede | Polygon Mainnet (Chain ID: 137) |
+| Supply | 21.000.000 wCBR |
+| DEX | [QuickSwap V2](https://quickswap.exchange/#/swap?inputCurrency=ETH&outputCurrency=0x208B65B781245AB72419FD6b159c65818ca69C08) |
+| DexTools | [Ver gráfico](https://www.dextools.io/app/polygon/pair-explorer/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2) |
+| GeckoTerminal | [Ver pool](https://www.geckoterminal.com/polygon_pos/pools/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2) |
 
 ---
 
