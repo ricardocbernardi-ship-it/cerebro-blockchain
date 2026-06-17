@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CEREBRO — Roteiro para Exchange</title>
+<style>
+:root{--acc:#a259ff;--grn:#00e676;--yel:#ffd54f;--red:#ff5252;--bg:#060608;--bg2:#0e0e12;--bg3:#16161c;--bd:#2a2a38;--txt:#f0f0f8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);line-height:1.7}
+nav{display:flex;align-items:center;gap:16px;padding:14px 24px;background:var(--bg2);border-bottom:1px solid var(--bd)}
+.logo{font-size:18px;font-weight:900;color:var(--acc)}
+nav a{color:#aaa;text-decoration:none;font-size:13px}
+nav a:hover{color:var(--txt)}
+.hero{text-align:center;padding:70px 20px 50px;background:radial-gradient(ellipse 80% 60% at 50% 0%,#0a1a2e,transparent)}
+.hero h1{font-size:clamp(30px,5vw,54px);font-weight:900;margin-bottom:12px}
+.hero h1 em{color:var(--grn);font-style:normal}
+.hero p{font-size:16px;color:#aaa;max-width:580px;margin:0 auto}
+main{max-width:900px;margin:0 auto;padding:60px 24px 80px}
+.phase{display:grid;grid-template-columns:180px 1fr;gap:0;margin-bottom:2px;border-radius:0}
+.phase:first-child{border-radius:14px 14px 0 0}
+.phase:last-child{border-radius:0 0 14px 14px;margin-bottom:40px}
+.phase-left{padding:24px 20px;background:var(--bg3);border:1px solid var(--bd);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px}
+.phase-right{padding:24px;background:var(--bg2);border:1px solid var(--bd);border-left:none}
+.phase-num{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#555}
+.phase-icon{font-size:28px}
+.phase-status{font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px}
+.s-done{background:#0d1a0d;color:var(--grn);border:1px solid var(--grn)44}
+.s-curr{background:#1a1225;color:var(--acc);border:1px solid var(--acc)44}
+.s-next{background:#1a1a0d;color:var(--yel);border:1px solid var(--yel)44}
+.s-fut{background:#1a1a1a;color:#555;border:1px solid #33333344}
+.phase-right h3{font-size:17px;font-weight:800;margin-bottom:8px}
+.phase-right p{font-size:13px;color:#888;margin-bottom:10px}
+.checks{list-style:none;display:flex;flex-direction:column;gap:4px}
+.checks li{font-size:13px;display:flex;align-items:center;gap:8px}
+.checks li::before{content:'✓';color:var(--grn);font-weight:900;flex-shrink:0}
+.checks li.pend::before{content:'○';color:#444}
+.checks li.curr::before{content:'→';color:var(--acc)}
+.divider{margin:40px 0;border:none;border-top:1px solid var(--bd)}
+h2{font-size:24px;font-weight:900;margin-bottom:20px}
+.exchange-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:40px}
+.exc{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:18px;text-align:center}
+.exc-name{font-size:15px;font-weight:800;margin-bottom:4px}
+.exc-type{font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;display:inline-block;margin-bottom:8px}
+.t-dex{background:#0d1a0d;color:var(--grn)}
+.t-cex{background:#1a1225;color:var(--acc)}
+.t-cex2{background:#1a1a0d;color:var(--yel)}
+.exc-req{font-size:11px;color:#555;line-height:1.6}
+.req-box{background:var(--bg3);border:1px solid var(--bd);border-radius:12px;padding:20px 24px;margin-bottom:20px}
+.req-box h3{font-size:15px;font-weight:800;margin-bottom:12px;color:var(--acc)}
+.req-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.req-list li{font-size:13px;display:flex;align-items:start;gap:10px;color:#ccc}
+.req-list li span{font-size:16px;flex-shrink:0}
+.action-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:40px}
+.action{background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:18px}
+.action-num{font-size:11px;font-weight:700;color:var(--acc);margin-bottom:6px}
+.action h3{font-size:14px;font-weight:800;margin-bottom:6px}
+.action p{font-size:12px;color:#666;line-height:1.6}
+.action.featured{border-color:var(--grn);background:#0d1a0d11}
+@media(max-width:640px){.phase{grid-template-columns:1fr}.phase-left{flex-direction:row;justify-content:space-between;border-radius:0}.phase-right{border-left:1px solid var(--bd);border-top:none}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">🧠 CEREBRO</div>
+  <a href="/">Home</a>
+  <a href="/mining.html">Minerar</a>
+  <a href="/wallet.html">Wallet</a>
+  <a href="/whitepaper.html">Whitepaper</a>
+</nav>
+
+<div class="hero">
+  <h1>CBR em <em>Exchange</em>.<br>Passo a passo.</h1>
+  <p>Roadmap completo para listar o CEREBRO CBR em exchanges e ter preço real no mercado.</p>
+</div>
+
+<main>
+
+  <!-- FASES -->
+  <div class="phase">
+    <div class="phase-left">
+      <div class="phase-num">Fase 1</div>
+      <div class="phase-icon">🏗️</div>
+      <div class="phase-status s-done">✓ Completo</div>
+    </div>
+    <div class="phase-right">
+      <h3>Blockchain Funcional</h3>
+      <p>Construir a base técnica — sem isso nenhuma exchange aceita.</p>
+      <ul class="checks">
+        <li>Nó PoW funcionando 24h</li>
+        <li>API REST com 30+ endpoints</li>
+        <li>Carteiras com criptografia secp256k1</li>
+        <li>Explorer web em tempo real</li>
+        <li>Whitepaper publicado</li>
+        <li>GitHub open source com README</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-left">
+      <div class="phase-num">Fase 2</div>
+      <div class="phase-icon">🌐</div>
+      <div class="phase-status s-curr">→ Agora</div>
+    </div>
+    <div class="phase-right">
+      <h3>Nó Público 24/7</h3>
+      <p>Exchanges exigem que a rede esteja acessível na internet com URL fixa.</p>
+      <ul class="checks">
+        <li>Deploy no Render.com (URL fixa gratuita)</li>
+        <li class="curr">Explorer público: cerebro-blockchain.onrender.com</li>
+        <li class="pend">Domínio próprio: cerebrochain.io</li>
+        <li class="pend">SSL/HTTPS ativo</li>
+        <li class="pend">Uptime 99%+ confirmado</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-left">
+      <div class="phase-num">Fase 3</div>
+      <div class="phase-icon">📱</div>
+      <div class="phase-status s-next">Próximo</div>
+    </div>
+    <div class="phase-right">
+      <h3>Comunidade e Mídia</h3>
+      <p>Exchanges verificam se o projeto tem comunidade real antes de listar.</p>
+      <ul class="checks">
+        <li class="pend">Twitter/X com 500+ seguidores</li>
+        <li class="pend">Telegram com 200+ membros</li>
+        <li class="pend">Reddit r/CerebroBlockchain</li>
+        <li class="pend">Medium/Blog com artigos técnicos</li>
+        <li class="pend">Discord com canais de suporte</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-left">
+      <div class="phase-num">Fase 4</div>
+      <div class="phase-icon">📊</div>
+      <div class="phase-status s-next">Próximo</div>
+    </div>
+    <div class="phase-right">
+      <h3>CoinGecko & CoinMarketCap</h3>
+      <p>Listagem de graça nos maiores rastreadores de preço do mundo.</p>
+      <ul class="checks">
+        <li class="pend">Formulário CoinGecko enviado</li>
+        <li class="pend">Formulário CoinMarketCap enviado</li>
+        <li class="pend">Logo 200x200px PNG enviado</li>
+        <li class="pend">Explorer público verificado</li>
+        <li class="pend">Aprovação (leva 2-8 semanas)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-left">
+      <div class="phase-num">Fase 5</div>
+      <div class="phase-icon">💱</div>
+      <div class="phase-status s-fut">Futuro</div>
+    </div>
+    <div class="phase-right">
+      <h3>Exchange — DEX Primeiro</h3>
+      <p>Criar pool de liquidez em DEX é mais fácil que CEX. CBR começa a ter preço.</p>
+      <ul class="checks">
+        <li class="pend">Deploy wCBR (wrapped) na Polygon</li>
+        <li class="pend">Pool wCBR/MATIC no QuickSwap</li>
+        <li class="pend">Liquidez inicial adicionada</li>
+        <li class="pend">CBR aparece no DexTools / GeckoTerminal</li>
+        <li class="pend">Preço em USD definido pelo mercado</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-left">
+      <div class="phase-num">Fase 6</div>
+      <div class="phase-icon">🏛️</div>
+      <div class="phase-status s-fut">Futuro</div>
+    </div>
+    <div class="phase-right">
+      <h3>Exchange Centralizada (CEX)</h3>
+      <p>Listagem em exchanges com volume real. CBR vira ativo negociável globalmente.</p>
+      <ul class="checks">
+        <li class="pend">Aplicação BitMart (listagem gratuita por votação)</li>
+        <li class="pend">Aplicação MEXC (listagem por votação)</li>
+        <li class="pend">Aplicação XT.com</li>
+        <li class="pend">Aplicação LBank</li>
+        <li class="pend">Volume diário $50K+ comprovado</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- EXCHANGES ALVO -->
+  <h2>🎯 Exchanges Alvo</h2>
+  <div class="exchange-grid">
+    <div class="exc">
+      <div class="exc-name">QuickSwap</div>
+      <div class="exc-type t-dex">DEX — Polygon</div>
+      <div class="exc-req">Grátis. Criar pool wCBR/MATIC com liquidez inicial. Imediato.</div>
+    </div>
+    <div class="exc">
+      <div class="exc-name">Uniswap</div>
+      <div class="exc-type t-dex">DEX — Ethereum</div>
+      <div class="exc-req">Grátis. Gas mais caro. Alta visibilidade.</div>
+    </div>
+    <div class="exc">
+      <div class="exc-name">BitMart</div>
+      <div class="exc-type t-cex">CEX — Global</div>
+      <div class="exc-req">Votação da comunidade. Sem taxa se ganhar votação.</div>
+    </div>
+    <div class="exc">
+      <div class="exc-name">MEXC</div>
+      <div class="exc-type t-cex">CEX — Global</div>
+      <div class="exc-req">Listagem por votação. 500M+ usuários cadastrados.</div>
+    </div>
+    <div class="exc">
+      <div class="exc-name">XT.com</div>
+      <div class="exc-type t-cex2">CEX — Médio</div>
+      <div class="exc-req">Aceita projetos novos. Taxa de listagem negociável.</div>
+    </div>
+    <div class="exc">
+      <div class="exc-name">LBank</div>
+      <div class="exc-type t-cex2">CEX — Médio</div>
+      <div class="exc-req">Focado em novos projetos. Listagem acessível.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- O QUE EXCHANGES EXIGEM -->
+  <h2>📋 O que as exchanges exigem</h2>
+  <div class="req-box">
+    <h3>✅ Já temos</h3>
+    <ul class="req-list">
+      <li><span>📄</span>Whitepaper técnico publicado</li>
+      <li><span>💻</span>Código open source no GitHub</li>
+      <li><span>🔍</span>Block explorer funcionando</li>
+      <li><span>📊</span>API pública de consulta</li>
+      <li><span>🔒</span>Auditoria de segurança básica (código público)</li>
+    </ul>
+  </div>
+  <div class="req-box" style="border-color:var(--yel)33">
+    <h3 style="color:var(--yel)">⚠️ Precisamos construir</h3>
+    <ul class="req-list">
+      <li><span>🌐</span>Nó público 24/7 com URL fixa (Render.com — próximo passo)</li>
+      <li><span>👥</span>Comunidade ativa (Telegram 200+, Twitter 500+)</li>
+      <li><span>📈</span>Volume de transações diário</li>
+      <li><span>🖼️</span>Logo profissional (200x200 PNG, fundo transparente)</li>
+      <li><span>📧</span>Email corporativo (noreply@cerebrochain.io)</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PRÓXIMAS AÇÕES -->
+  <h2>⚡ Próximas ações imediatas</h2>
+  <div class="action-cards">
+    <div class="action featured">
+      <div class="action-num">AÇÃO 1 — HOJE</div>
+      <h3>🚀 Deploy Render.com</h3>
+      <p>Criar conta em render.com com GitHub. Deploy automático. URL fixa gratuita. Isso desbloqueia todas as outras ações.</p>
+    </div>
+    <div class="action">
+      <div class="action-num">AÇÃO 2 — HOJE</div>
+      <h3>📱 Criar Telegram</h3>
+      <p>Criar grupo @CerebroBlockchain e canal de anúncios. Primeira comunidade oficial do CBR.</p>
+    </div>
+    <div class="action">
+      <div class="action-num">AÇÃO 3 — HOJE</div>
+      <h3>🐦 Criar Twitter/X</h3>
+      <p>Conta @CerebroChain. Postar o whitepaper, mining guide e chamar mineradores.</p>
+    </div>
+    <div class="action">
+      <div class="action-num">AÇÃO 4 — SEMANA</div>
+      <h3>🎨 Logo profissional</h3>
+      <p>Criar logo 200x200 do CEREBRO para usar em CoinGecko, exchanges e redes sociais.</p>
+    </div>
+    <div class="action">
+      <div class="action-num">AÇÃO 5 — SEMANA</div>
+      <h3>📊 CoinGecko</h3>
+      <p>Enviar formulário de listagem gratuita. Leva 2-8 semanas para aprovação.</p>
+    </div>
+    <div class="action">
+      <div class="action-num">AÇÃO 6 — MÊS</div>
+      <h3>💱 Pool no QuickSwap</h3>
+      <p>Deploy do wCBR na Polygon e criar pool de liquidez. CBR começa a ter preço real.</p>
+    </div>
+  </div>
+
+</main>
+</body>
+</html>
