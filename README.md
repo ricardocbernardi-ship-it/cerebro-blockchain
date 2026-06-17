@@ -7,6 +7,7 @@
 [![Versão](https://img.shields.io/badge/versão-3.0.0-a259ff?style=flat)](https://github.com/ricardocbernardi-ship-it/cerebro-blockchain)
 [![QuickSwap](https://img.shields.io/badge/QuickSwap-wCBR%2FPOL-00e676?style=flat&logo=ethereum)](https://quickswap.exchange/#/swap?inputCurrency=ETH&outputCurrency=0x208B65B781245AB72419FD6b159c65818ca69C08)
 [![Polygonscan](https://img.shields.io/badge/Polygonscan-wCBR-a259ff?style=flat)](https://polygonscan.com/token/0x208B65B781245AB72419FD6b159c65818ca69C08)
+[![DexScreener](https://img.shields.io/badge/DexScreener-wCBR%2FWPOL-00e676?style=flat)](https://dexscreener.com/polygon/0x4eb7b05ad067a5dedb5393e6a1dd728bf5c756b2)
 
 ---
 
@@ -148,6 +149,7 @@ O token **wCBR** (Wrapped CEREBRO) está disponível na Polygon Mainnet e pode s
 | DEX | [QuickSwap V2](https://quickswap.exchange/#/swap?inputCurrency=ETH&outputCurrency=0x208B65B781245AB72419FD6b159c65818ca69C08) |
 | DexTools | [Ver gráfico](https://www.dextools.io/app/polygon/pair-explorer/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2) |
 | GeckoTerminal | [Ver pool](https://www.geckoterminal.com/polygon_pos/pools/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2) |
+| DexScreener | [Ver gráfico](https://dexscreener.com/polygon/0x4eb7b05ad067a5dedb5393e6a1dd728bf5c756b2) |
 
 ---
 

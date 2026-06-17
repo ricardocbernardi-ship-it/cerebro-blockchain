@@ -105,24 +105,29 @@ LICENÇA:
    https://coinhunt.cc/submit
    → Preencher com dados acima
 
-5. DexTools (pool criado — já disponível):
+5. DexTools (✅ INDEXADO - ao vivo):
    https://www.dextools.io/app/polygon/pair-explorer/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2
 
-6. GeckoTerminal (pool criado — já disponível):
+6. GeckoTerminal (✅ INDEXADO - ao vivo):
    https://www.geckoterminal.com/polygon_pos/pools/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2
 
+7. DexScreener (✅ INDEXADO - ao vivo):
+   https://dexscreener.com/polygon/0x4eb7b05ad067a5dedb5393e6a1dd728bf5c756b2
+
 ====================================================
-  PRÓXIMO PASSO CRÍTICO: CRIAR POOL NO QUICKSWAP
+  STATUS DO POOL QUICKSWAP — CONFIRMADO AO VIVO
 ====================================================
 
   ✅ POOL CRIADO COM SUCESSO!
   TX: 0x5e619cafb7e1716b5aadbf9a09bc5c945202784bf76145058fab66b538200298
-  Par wCBR/WMATIC: 0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2
+  Par wCBR/WPOL: 0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2
   Liquidez: 1.000.000 wCBR + 10 POL
   Preço inicial: 1 wCBR = 0.00001 POL
+  Preço atual: ~$0.00108/wCBR
 
-  DexTools: https://www.dextools.io/app/polygon/pair-explorer/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2
-  GeckoTerminal: https://www.geckoterminal.com/polygon_pos/pools/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2
+  ✅ DexTools: https://www.dextools.io/app/polygon/pair-explorer/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2
+  ✅ GeckoTerminal: https://www.geckoterminal.com/polygon_pos/pools/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2
+  ✅ DexScreener: https://dexscreener.com/polygon/0x4eb7b05ad067a5dedb5393e6a1dd728bf5c756b2
   QuickSwap: https://quickswap.exchange/#/swap?inputCurrency=ETH&outputCurrency=0x208B65B781245AB72419FD6b159c65818ca69C08
 
 ====================================================
