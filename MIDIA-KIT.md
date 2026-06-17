@@ -1,4 +1,6 @@
 # 🧠 CEREBRO — KIT DE MÍDIA COMPLETO
+## Canal Telegram: https://t.me/cerebro_blockchain ✅ CRIADO
+
 ## Copie e cole direto nas redes sociais
 
 ---

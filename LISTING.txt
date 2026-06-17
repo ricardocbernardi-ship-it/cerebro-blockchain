@@ -67,6 +67,9 @@ EXPLORER:
 POLYGONSCAN:
   https://polygonscan.com/token/0x208B65B781245AB72419FD6b159c65818ca69C08
 
+TELEGRAM:
+  https://t.me/cerebro_blockchain
+
 CONTATO:
   ricardocardosobernardi@gmail.com
 
