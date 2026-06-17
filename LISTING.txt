@@ -102,28 +102,24 @@ LICENÇA:
    https://coinhunt.cc/submit
    → Preencher com dados acima
 
-5. DexTools (automático após pool no QuickSwap):
-   https://www.dextools.io/app/polygon/pair-explorer/[endereco-do-pool]
+5. DexTools (pool criado — já disponível):
+   https://www.dextools.io/app/polygon/pair-explorer/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2
 
-6. GeckoTerminal (automático após pool):
-   https://www.geckoterminal.com
+6. GeckoTerminal (pool criado — já disponível):
+   https://www.geckoterminal.com/polygon_pos/pools/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2
 
 ====================================================
   PRÓXIMO PASSO CRÍTICO: CRIAR POOL NO QUICKSWAP
 ====================================================
 
-  URL: https://quickswap.exchange/#/add
-  Token A: 0x208B65B781245AB72419FD6b159c65818ca69C08 (wCBR)
-  Token B: POL (nativo da Polygon)
+  ✅ POOL CRIADO COM SUCESSO!
+  TX: 0x5e619cafb7e1716b5aadbf9a09bc5c945202784bf76145058fab66b538200298
+  Par wCBR/WMATIC: 0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2
+  Liquidez: 1.000.000 wCBR + 10 POL
+  Preço inicial: 1 wCBR = 0.00001 POL
 
-  Sugestão de liquidez inicial:
-  → Adicionar 50 POL + 5.000.000 wCBR
-  → Isso define: 1 wCBR = 0.00001 POL
-  → Com POL a $0.50: 1 wCBR = $0.000005
-
-  Após criar o pool:
-  → wCBR aparece automaticamente no DexTools
-  → wCBR aparece no GeckoTerminal
-  → Qualquer pessoa pode comprar wCBR
+  DexTools: https://www.dextools.io/app/polygon/pair-explorer/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2
+  GeckoTerminal: https://www.geckoterminal.com/polygon_pos/pools/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2
+  QuickSwap: https://quickswap.exchange/#/swap?inputCurrency=ETH&outputCurrency=0x208B65B781245AB72419FD6b159c65818ca69C08
 
 ====================================================

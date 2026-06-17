@@ -1,0 +1,21 @@
+{
+  "pool": "wCBR/WMATIC QuickSwap V2",
+  "pairAddress": "0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2",
+  "token0": "wCBR",
+  "token0Address": "0x208B65B781245AB72419FD6b159c65818ca69C08",
+  "token1": "WMATIC/POL",
+  "token1Address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+  "dex": "QuickSwap V2",
+  "rede": "Polygon Mainnet",
+  "chainId": 137,
+  "txHash": "0x5e619cafb7e1716b5aadbf9a09bc5c945202784bf76145058fab66b538200298",
+  "liquidez": {
+    "wcbr": "1000000",
+    "pol": "10"
+  },
+  "precoInicial": "1 wCBR = 0.00001 POL",
+  "dextools": "https://www.dextools.io/app/polygon/pair-explorer/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2",
+  "geckoterminal": "https://www.geckoterminal.com/polygon_pos/pools/0x4eB7B05AD067A5DEDb5393E6A1Dd728bf5C756B2",
+  "quickswap": "https://quickswap.exchange/#/swap?inputCurrency=ETH&outputCurrency=0x208B65B781245AB72419FD6b159c65818ca69C08",
+  "timestamp": "2026-06-17T01:25:09.634Z"
+}
