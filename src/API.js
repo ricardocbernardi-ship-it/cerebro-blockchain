@@ -157,7 +157,7 @@ function criarAPI(blockchain, p2p, porta = 3001) {
     } catch (e) { res.status(400).json({ erro: sanitizeError(e) }); }
   });
 
-  // ── MINERAÇÃO ───────────────────────────────────────────────
+  // ── MINERAÇÃO SERVIDOR (legado) ─────────────────────────────
   app.post("/api/mine", limiterEscrita, (req, res) => {
     try {
       const { rewardAddress } = req.body;
@@ -165,6 +165,96 @@ function criarAPI(blockchain, p2p, porta = 3001) {
       broadcast("NEW_BLOCK", { block, stats: blockchain.getNetworkStats() });
       res.json({ ok: true, bloco: blockchain.chain.length - 1, hash: block.hash });
     } catch (e) { res.status(400).json({ erro: sanitizeError(e) }); }
+  });
+
+  // ── MINERAÇÃO DISTRIBUÍDA (cliente faz o PoW real) ──────────
+  // GET /api/mine/template?rewardAddress=04...
+  app.get("/api/mine/template", (req, res) => {
+    try {
+      const { rewardAddress } = req.query;
+      if (!rewardAddress || !/^04[0-9a-fA-F]{128}$/.test(rewardAddress))
+        return res.status(400).json({ erro: "rewardAddress inválido" });
+
+      const lastBlock  = blockchain.getLatestBlock();
+      const recompensa = blockchain.getMiningReward();
+      const timestamp  = Date.now();
+
+      // Monta transações: pendentes + coinbase (recompensa ao minerador)
+      const txs = [...blockchain.pendingTransactions];
+      if (recompensa > 0 && blockchain.getTotalSupply() < blockchain.maxSupply) {
+        txs.push({
+          fromAddress: null,
+          toAddress:   rewardAddress,
+          amount:      recompensa,
+          timestamp,
+          signature:   null,
+          type:        "TRANSFER"
+        });
+      }
+
+      res.json({
+        previousHash: lastBlock.hash,
+        difficulty:   blockchain.difficulty,
+        timestamp,
+        transactions: txs,
+        blocoNum:     blockchain.chain.length,
+        recompensa,
+        rewardAddress
+      });
+    } catch (e) { res.status(500).json({ erro: sanitizeError(e) }); }
+  });
+
+  // POST /api/mine/submit — cliente envia nonce resolvido
+  app.post("/api/mine/submit", limiterEscrita, (req, res) => {
+    try {
+      const { nonce, previousHash, timestamp, transactions, rewardAddress } = req.body;
+
+      if (!rewardAddress || !/^04[0-9a-fA-F]{128}$/.test(rewardAddress))
+        return res.status(400).json({ erro: "rewardAddress inválido" });
+      if (typeof nonce !== "number" || nonce < 0)
+        return res.status(400).json({ erro: "nonce inválido" });
+
+      // Bloco desatualizado? outro minerou antes
+      const lastBlock = blockchain.getLatestBlock();
+      if (lastBlock.hash !== previousHash)
+        return res.status(409).json({ erro: "Bloco desatualizado — busque novo template.", stale: true });
+
+      // Verificar PoW do cliente
+      const crypto   = require("crypto");
+      const hashCalc = crypto.createHash("sha256")
+        .update(previousHash + timestamp + JSON.stringify(transactions) + nonce)
+        .digest("hex");
+
+      const alvo = "0".repeat(blockchain.difficulty);
+      if (!hashCalc.startsWith(alvo))
+        return res.status(400).json({ erro: "PoW inválido — hash não atinge dificuldade" });
+
+      // Verificar que a tx de recompensa bate com o rewardAddress
+      const txRecompensa = transactions.find(t => t.fromAddress === null);
+      if (txRecompensa && txRecompensa.toAddress !== rewardAddress)
+        return res.status(400).json({ erro: "Endereço de recompensa adulterado" });
+
+      // Tudo OK — adicionar bloco à chain
+      const Block = require("./Block");
+      const block = new Block(timestamp, transactions, previousHash);
+      block.nonce = nonce;
+      block.hash  = hashCalc;
+
+      blockchain.chain.push(block);
+      blockchain.pendingTransactions = [];
+      blockchain._updateTPS();
+
+      broadcast("NEW_BLOCK", { block, stats: blockchain.getNetworkStats() });
+
+      const recompensa = txRecompensa ? txRecompensa.amount : 0;
+      res.json({
+        ok:        true,
+        bloco:     blockchain.chain.length - 1,
+        hash:      block.hash,
+        recompensa,
+        minerador: rewardAddress.substring(0, 20) + "..."
+      });
+    } catch (e) { res.status(500).json({ erro: sanitizeError(e) }); }
   });
 
   // ── TOKENS CBRC-20 ──────────────────────────────────────────

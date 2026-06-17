@@ -6,7 +6,7 @@ const vm = require("vm");
 class Blockchain {
   constructor() {
     this.chain = [this.criarBlocoGenesis()];
-    this.difficulty = 2;              // baixo — finality instantânea prioridade
+    this.difficulty = 4;              // PoW real — cliente minera ~1-3s por bloco
     this.pendingTransactions = [];
     this.baseReward = 50;
     this.halvingInterval = 210000;
