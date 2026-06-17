@@ -1,7 +1,21 @@
 {
-  "name": "cerebro",
-  "version": "1.0.0",
-  "description": "CEREBRO — blockchain educacional estilo Bitcoin (PoW, halving, P2P) — local, sem valor real",
+  "name": "cerebro-blockchain",
+  "version": "3.0.0",
+  "description": "CEREBRO — Blockchain com Smart Contracts em JavaScript, NFTs CBRC-721, Tokens CBRC-20, DEX AMM nativo e Staking",
+  "main": "cerebro.js",
+  "keywords": ["blockchain","javascript","smart-contracts","nft","defi","dex","staking","cbr","cerebro"],
+  "author": "Ricardo C. Bernardi <ricardocardosobernardi@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://ricardocbernardi-ship-it.github.io/cerebro-blockchain/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ricardocbernardi-ship-it/cerebro-blockchain.git"
+  },
+  "scripts": {
+    "start": "node no-completo.js",
+    "mine": "node scripts/faucet.js",
+    "tunnel": "node tunnel.js"
+  },
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
